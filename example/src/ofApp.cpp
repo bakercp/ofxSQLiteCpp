@@ -102,7 +102,6 @@ void ofApp::setup()
     catch (std::exception& e)
     {
         std::cout << "SQLite exception: " << e.what() << std::endl;
-        return EXIT_FAILURE; // unexpected error : exit the example program
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -120,7 +119,6 @@ void ofApp::setup()
     catch (std::exception& e)
     {
         std::cout << "SQLite exception: " << e.what() << std::endl;
-        return EXIT_FAILURE; // unexpected error : exit the example program
     }
 
     // The execAndGet wrapper example (3/6) :
@@ -139,7 +137,6 @@ void ofApp::setup()
     catch (std::exception& e)
     {
         std::cout << "SQLite exception: " << e.what() << std::endl;
-        return EXIT_FAILURE; // unexpected error : exit the example program
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -179,7 +176,6 @@ void ofApp::setup()
     catch (std::exception& e)
     {
         std::cout << "SQLite exception: " << e.what() << std::endl;
-        return EXIT_FAILURE; // unexpected error : exit the example program
     }
 
     remove(testDb.c_str());
@@ -211,7 +207,6 @@ void ofApp::setup()
         catch (std::exception& e)
         {
             std::cout << "SQLite exception: " << e.what() << std::endl;
-            return EXIT_FAILURE; // unexpected error : exit the example program
         }
 
         // Exemple of a rollbacked transaction :
@@ -227,7 +222,8 @@ void ofApp::setup()
             nb = db.exec("INSERT INTO test ObviousError");
             std::cout << "INSERT INTO test \"error\", returned " << nb << std::endl;
 
-            return EXIT_FAILURE; // unexpected success : exit the example program
+
+            std::cout << "SQLite SHOULD EXIT: " << std::endl;
 
             // Commit transaction
             transaction.commit();
@@ -249,7 +245,6 @@ void ofApp::setup()
     catch (std::exception& e)
     {
         std::cout << "SQLite exception: " << e.what() << std::endl;
-        return EXIT_FAILURE; // unexpected error : exit the example program
     }
 
     remove(transactionDb.c_str());
@@ -288,7 +283,6 @@ void ofApp::setup()
         else
         {
             std::cout << "file " << filename_logo_png << " not found !\n";
-            return EXIT_FAILURE; // unexpected error : exit the example program
         }
 
         fp = fopen(ofToDataPath("out.png", true).c_str(), "wb");
@@ -313,13 +307,11 @@ void ofApp::setup()
         else
         {
             std::cout << "file out.png not created !\n";
-            return EXIT_FAILURE; // unexpected error : exit the example program
         }
     }
     catch (std::exception& e)
     {
         std::cout << "SQLite exception: " << e.what() << std::endl;
-        return EXIT_FAILURE; // unexpected error : exit the example program
     }
     
     remove(ofToDataPath("out.png", true).c_str());
