@@ -307,7 +307,7 @@ void ofApp::setup()
         else
         {
             std::cout << "file out.png not created !\n";
-        }
+            }
     }
     catch (std::exception& e)
     {
