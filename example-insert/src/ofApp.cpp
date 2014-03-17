@@ -32,50 +32,50 @@ void ofApp::setup()
     ofEnableAlphaBlending();
 
     /// Example Database
-    std::string mbTilesFilename = ofToDataPath("blank-1-3.mbtiles", true);
+    std::string exampleDB = ofToDataPath("example.sqlite", true);
 
     try
     {
-        // Open a database file in readonly mode
-        SQLite::Database db(mbTilesFilename);  // SQLITE_OPEN_READONLY
+        // Open a database file in create/write mode
+        SQLite::Database db(exampleDB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
 
-        int zoomLevel = 1;
-        int tileColumn = 0;
-        int tileRow = 0;
+        ofLogNotice() << "SQLite database file '" << db.getFilename() << "' opened successfully";
 
-        // We use string stream to create a long query string, but one
-        // could just as easily use a string with the += operator.  It's style.
-        std::stringstream ss;
+        db.exec("DROP TABLE IF EXISTS test");
+        db.exec("CREATE TABLE test (id INTEGER PRIMARY KEY, value TEXT)");
 
-        ss << "SELECT zoom_level, tile_column, tile_row, tile_data ";
-        ss << "FROM tiles ";
-        ss << "WHERE zoom_level = ? ";
-        ss << "AND tile_column = ? ";
-        ss << "AND tile_row = ?";
+        // first row
+        int nb = db.exec("INSERT INTO test VALUES (NULL, \"test\")");
 
-        // Create the query with the database.
-        SQLite::Statement query(db, ss.str());
+        ofLogNotice() << "INSERT INTO test VALUES (NULL, \"test\")\", returned " << nb;
 
-        query.bind(1, zoomLevel);  // Bind the zoom level to the first ? in the query.
-        query.bind(2, tileColumn); // Bind the tile column to the second ? in the query.
-        query.bind(3, tileRow); // Bind the tile row to the third ? in the query.
+        // second row
+        nb = db.exec("INSERT INTO test VALUES (NULL, \"second\")");
 
-        // Loop to execute the query step by step, to get one a row of results at a time
+        ofLogNotice() << "INSERT INTO test VALUES (NULL, \"second\")\", returned " << nb;
+
+        // update the second row
+        nb = db.exec("UPDATE test SET value=\"second-updated\" WHERE id='2'");
+
+        ofLogNotice() << "UPDATE test SET value=\"second-updated\" WHERE id='2', returned " << nb;
+
+        // Check the results : expect two row of result
+        SQLite::Statement query(db, "SELECT * FROM test");
+
+        ofLogNotice() << "SELECT * FROM test :";
+
         while (query.executeStep())
         {
-            SQLite::Column colBlob = query.getColumn(3); // We know that column 3 is the image bytes
-            const void* blob = colBlob.getBlob(); // Get a pointer to the bytes.
-            std::size_t size = colBlob.getBytes(); // Get the number of bytes.
-            ofBuffer buffer(static_cast<const char*>(blob), size); // Create a buffer with those bytes.
-
-            img.loadImage(buffer); // Load the image from the buffer.
+            ofLogNotice() << "row (" << query.getColumn(0) << ", \"" << query.getColumn(1) << "\")";
         }
 
+        db.exec("DROP TABLE test");
     }
     catch (std::exception& e)
     {
         ofLogError() << "SQLite exception: " << e.what();
     }
+    
 }
 
 
@@ -83,6 +83,6 @@ void ofApp::draw()
 {
     ofBackgroundGradient(ofColor::white, ofColor::black);
 
-    // Draw the tile image.
-    img.draw(0, 0);
+    ofDrawBitmapStringHighlight("See console for output.", ofPoint(30, 30));
+    
 }

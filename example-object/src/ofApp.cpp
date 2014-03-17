@@ -23,12 +23,39 @@
 // =============================================================================
 
 
-
 #include "ofApp.h"
 
 
-int main()
+void ofApp::setup()
 {
-	ofSetupOpenGL(250, 50, OF_WINDOW);
-	ofRunApp(new ofApp());
+    ofSetFrameRate(30);
+    ofEnableAlphaBlending();
+
+    /// Example Database
+    std::string exampleDB = ofToDataPath("example.sqlite", true);
+
+    try
+    {
+        // Open the database and compile the query
+        MyObject example(exampleDB);
+
+        // Demonstrate the way to use the same query with different parameter values
+        example.listGreaterThan(8);
+        example.listGreaterThan(6);
+        example.listGreaterThan(2);
+    }
+    catch (std::exception& e)
+    {
+        ofLogError() << "SQLite exception: " << e.what();
+    }
+
+}
+
+
+void ofApp::draw()
+{
+    ofBackgroundGradient(ofColor::white, ofColor::black);
+
+    ofDrawBitmapStringHighlight("See console for output.", ofPoint(30, 30));
+    
 }

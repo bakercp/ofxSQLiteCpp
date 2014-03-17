@@ -23,12 +23,18 @@
 // =============================================================================
 
 
+#pragma once
 
-#include "ofApp.h"
+
+#include "ofMain.h"
+#include "SQLiteC++.h"
+#include "MyObject.h"
 
 
-int main()
+class ofApp: public ofBaseApp
 {
-	ofSetupOpenGL(250, 50, OF_WINDOW);
-	ofRunApp(new ofApp());
-}
+public:
+    void setup();
+    void draw();
+
+};

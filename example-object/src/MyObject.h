@@ -23,12 +23,47 @@
 // =============================================================================
 
 
+#include <string>
+#include "SQliteC++.h"
+#include "ofLog.h"
 
-#include "ofApp.h"
 
-
-int main()
+class MyObject
 {
-	ofSetupOpenGL(250, 50, OF_WINDOW);
-	ofRunApp(new ofApp());
-}
+public:
+    // Constructor
+    MyObject(const std::string& dbFile):
+        // Open a database file in readonly mode
+        mDb(dbFile),
+        // Compile a SQL query, containing one parameter (index 1)
+        mQuery(mDb, "SELECT * FROM test WHERE weight > :min_weight")
+    {
+    }
+
+    virtual ~MyObject()
+    {
+    }
+
+    /// List the rows where the "weight" column is greater than the provided aParamValue
+    void listGreaterThan(int aParamValue)
+    {
+        ofLogNotice() << "ListGreaterThan (" << aParamValue << ")";
+
+        // Bind the integer value provided to the first parameter of the SQL query
+        mQuery.bind(":min_weight", aParamValue); // same as mQuery.bind(1, aParamValue);
+
+        // Loop to execute the query step by step, to get one a row of results at a time
+        while (mQuery.executeStep())
+        {
+            ofLogNotice() << "row (" << mQuery.getColumn(0) << ", \"" << mQuery.getColumn(1) << "\", " << mQuery.getColumn(2) << ")";
+        }
+
+        // Reset the query to be able to use it again later
+        mQuery.reset();
+    }
+
+private:
+    SQLite::Database    mDb;    ///< Database connection
+    SQLite::Statement   mQuery; ///< Database prepared SQL query
+
+};

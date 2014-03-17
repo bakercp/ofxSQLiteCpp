@@ -5,9 +5,9 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>F55E62D8-2968-46BF-833B-69DEB1096CE9</string>
+	<string>A375426E-AF35-4754-B893-CE845B956B42</string>
 	<key>IDESourceControlProjectName</key>
-	<string>example</string>
+	<string>example-raii</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>3B34514A-1075-456B-8AF0-DAEFD698200B</key>
@@ -16,7 +16,7 @@
 		<string>ssh://github.com/bakercp/ofxSQLiteCpp.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>addons/ofxSQLiteCpp/example/example.xcodeproj/project.xcworkspace</string>
+	<string>addons/ofxSQLiteCpp/example-raii/example-raii.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>3B34514A-1075-456B-8AF0-DAEFD698200B</key>
