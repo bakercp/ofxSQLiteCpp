@@ -12,6 +12,8 @@
 	<dict>
 		<key>2DE9C8846D9375EAACFABA8963120E8E7719BAF5</key>
 		<string>github.com:bakercp/openFrameworks.git</string>
+		<key>5DB7C332A3A89035E93556A2A38BF414005BA671</key>
+		<string>github.com:bakercp/ofxJSON.git</string>
 		<key>A82C0ABFD7ACBB96A8DACF462A005A3A654155C7</key>
 		<string>github.com:bakercp/ofxSQLiteCpp.git</string>
 	</dict>
@@ -21,6 +23,8 @@
 	<dict>
 		<key>2DE9C8846D9375EAACFABA8963120E8E7719BAF5</key>
 		<string>../../../..</string>
+		<key>5DB7C332A3A89035E93556A2A38BF414005BA671</key>
+		<string>../../../../ofxJSON</string>
 		<key>A82C0ABFD7ACBB96A8DACF462A005A3A654155C7</key>
 		<string>../../..</string>
 	</dict>
@@ -39,6 +43,14 @@
 			<string>2DE9C8846D9375EAACFABA8963120E8E7719BAF5</string>
 			<key>IDESourceControlWCCName</key>
 			<string></string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5DB7C332A3A89035E93556A2A38BF414005BA671</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxJSON</string>
 		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>

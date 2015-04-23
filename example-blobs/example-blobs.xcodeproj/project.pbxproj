@@ -28,6 +28,8 @@
 		E7E077E515D3B63C0020DFD4 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */; };
 		E7E077E815D3B6510020DFD4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E077E715D3B6510020DFD4 /* QTKit.framework */; };
 		E7F985F815E0DEA3003869B5 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7F985F515E0DE99003869B5 /* Accelerate.framework */; };
+		FD81C8DE1AE9316D007EA3F4 /* ofxJSONElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD81C8D41AE9316D007EA3F4 /* ofxJSONElement.cpp */; };
+		FD81C8DF1AE9316D007EA3F4 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD81C8DD1AE9316D007EA3F4 /* jsoncpp.cpp */; };
 		ae4a846c9b5b4c0e9f15e4acf7450bda /* Column.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22da3d3f8608dffab73aecfe09fdac4a /* Column.cpp */; };
 		d8d8be08ba2daab627d8d862a39f40bd /* Statement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40fed7bebca2c7ea857137e902ab0410 /* Statement.cpp */; };
 		ef071dc5028255c75b5818ec96e63b77 /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6b2bfaa22bce82b10df0e07f76f2a755 /* Database.cpp */; };
@@ -95,6 +97,12 @@
 		E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
 		E7E077E715D3B6510020DFD4 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		E7F985F515E0DE99003869B5 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
+		FD81C8D31AE9316D007EA3F4 /* ofxJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxJSON.h; sourceTree = "<group>"; };
+		FD81C8D41AE9316D007EA3F4 /* ofxJSONElement.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxJSONElement.cpp; sourceTree = "<group>"; };
+		FD81C8D51AE9316D007EA3F4 /* ofxJSONElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxJSONElement.h; sourceTree = "<group>"; };
+		FD81C8DA1AE9316D007EA3F4 /* json-forwards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "json-forwards.h"; sourceTree = "<group>"; };
+		FD81C8DB1AE9316D007EA3F4 /* json.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = json.h; sourceTree = "<group>"; };
+		FD81C8DD1AE9316D007EA3F4 /* jsoncpp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = jsoncpp.cpp; sourceTree = "<group>"; };
 		aa31fad694ad6b4d83ff5c83d555f6a7 /* sqlite3.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = sqlite3.h; path = ../../../addons/ofxSQLiteCpp/libs/SQLiteCpp/sqlite3/sqlite3.h; sourceTree = SOURCE_ROOT; };
 		b805774dec7f8b67d41be37f796a9027 /* sqlite3.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = sqlite3.c; path = ../../../addons/ofxSQLiteCpp/libs/SQLiteCpp/sqlite3/sqlite3.c; sourceTree = SOURCE_ROOT; };
 		e81f5ed23431c199e2c3b96b21d59e3a /* Database.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = Database.h; path = ../../../addons/ofxSQLiteCpp/libs/SQLiteCpp/src/Database.h; sourceTree = SOURCE_ROOT; };
@@ -177,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				ce7609cf81f132f43dfd17f2e14059af /* ofxSQLiteCpp */,
+				FD81C8D11AE9316D007EA3F4 /* ofxJSON */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -257,6 +266,69 @@
 				E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */,
 			);
 			name = openFrameworks;
+			sourceTree = "<group>";
+		};
+		FD81C8D11AE9316D007EA3F4 /* ofxJSON */ = {
+			isa = PBXGroup;
+			children = (
+				FD81C8D21AE9316D007EA3F4 /* src */,
+				FD81C8D61AE9316D007EA3F4 /* libs */,
+			);
+			name = ofxJSON;
+			sourceTree = "<group>";
+		};
+		FD81C8D21AE9316D007EA3F4 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				FD81C8D31AE9316D007EA3F4 /* ofxJSON.h */,
+				FD81C8D41AE9316D007EA3F4 /* ofxJSONElement.cpp */,
+				FD81C8D51AE9316D007EA3F4 /* ofxJSONElement.h */,
+			);
+			name = src;
+			path = ../../ofxJSON/src;
+			sourceTree = "<group>";
+		};
+		FD81C8D61AE9316D007EA3F4 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				FD81C8D71AE9316D007EA3F4 /* jsoncpp */,
+			);
+			name = libs;
+			path = ../../ofxJSON/libs;
+			sourceTree = "<group>";
+		};
+		FD81C8D71AE9316D007EA3F4 /* jsoncpp */ = {
+			isa = PBXGroup;
+			children = (
+				FD81C8D81AE9316D007EA3F4 /* include */,
+				FD81C8DC1AE9316D007EA3F4 /* src */,
+			);
+			path = jsoncpp;
+			sourceTree = "<group>";
+		};
+		FD81C8D81AE9316D007EA3F4 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				FD81C8D91AE9316D007EA3F4 /* json */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		FD81C8D91AE9316D007EA3F4 /* json */ = {
+			isa = PBXGroup;
+			children = (
+				FD81C8DA1AE9316D007EA3F4 /* json-forwards.h */,
+				FD81C8DB1AE9316D007EA3F4 /* json.h */,
+			);
+			path = json;
+			sourceTree = "<group>";
+		};
+		FD81C8DC1AE9316D007EA3F4 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				FD81C8DD1AE9316D007EA3F4 /* jsoncpp.cpp */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 		ce7609cf81f132f43dfd17f2e14059af /* ofxSQLiteCpp */ = {
@@ -354,10 +426,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD81C8DF1AE9316D007EA3F4 /* jsoncpp.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				4b14cedcc7195a4d1f8e28b4f9635a89 /* ofApp.cpp in Sources */,
 				3803a628e4c72ecae6802ef224432a07 /* sqlite3.c in Sources */,
 				ae4a846c9b5b4c0e9f15e4acf7450bda /* Column.cpp in Sources */,
+				FD81C8DE1AE9316D007EA3F4 /* ofxJSONElement.cpp in Sources */,
 				ef071dc5028255c75b5818ec96e63b77 /* Database.cpp in Sources */,
 				d8d8be08ba2daab627d8d862a39f40bd /* Statement.cpp in Sources */,
 				280fba9c4789c3a83bf7a01e1939f549 /* Transaction.cpp in Sources */,
@@ -538,6 +612,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)Debug";
+				USER_HEADER_SEARCH_PATHS = ../../ofxJSON/libs/jsoncpp/include/;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -623,6 +698,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = ../../ofxJSON/libs/jsoncpp/include/;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
