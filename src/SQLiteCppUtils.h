@@ -26,7 +26,7 @@
 #pragma once
 
 
-#include "SQLiteC++.h"
+#include "SQLiteCpp.h"
 #include <json/json.h>
 
 

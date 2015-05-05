@@ -23,7 +23,7 @@
 // =============================================================================
 
 
-#include "SQLiteC++Utils.h"
+#include "SQLiteCppUtils.h"
 #include "Poco/Base64Encoder.h"
 #include <sstream>
 
