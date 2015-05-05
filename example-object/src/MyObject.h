@@ -24,7 +24,7 @@
 
 
 #include <string>
-#include "SQliteC++.h"
+#include "SQLiteCpp.h"
 #include "ofLog.h"
 
 

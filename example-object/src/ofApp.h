@@ -27,7 +27,7 @@
 
 
 #include "ofMain.h"
-#include "SQLiteC++.h"
+#include "SQLiteCpp.h"
 #include "MyObject.h"
 
 
