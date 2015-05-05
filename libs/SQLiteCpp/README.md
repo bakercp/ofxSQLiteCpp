@@ -1,7 +1,11 @@
 SQLiteC++
 ---------
 
-![SQLiteCpp build status](https://api.travis-ci.org/SRombauts/SQLiteCpp.png "SQLiteCpp build status")
+[![release](https://img.shields.io/github/release/SRombauts/SQLiteCpp.svg?style=flat-square)](https://github.com/SRombauts/SQLiteCpp/releases)
+[![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/SQLiteCpp.svg)](https://travis-ci.org/SRombauts/SQLiteCpp "Travis CI Linux Build Status")
+[![AppVeyor Windows Build status](https://ci.appveyor.com/api/projects/status/github/SRombauts/SQLiteCpp?svg=true)](https://ci.appveyor.com/project/SbastienRombauts/SQLiteCpp "AppVeyor Windows Build status")
+[![Biicode Build Status](https://webapi.biicode.com/v1/badges/sqlite/sqlite/sqlite/master)](https://www.biicode.com/sqlite/sqlite) 
+
 
 SQLiteC++ (SQLiteCpp) is a smart and easy to use C++ SQLite3 wrapper.
 
@@ -42,18 +46,18 @@ where assert() are used instead).
 Each SQLiteC++ object must be constructed with a valid SQLite database connection,
 and then is always valid until destroyed.
 
-### Suported platforms:
+### Supported platforms:
 
-Developements and tests are done under the following OSs :
-- Debian 7 (testing)
+Developements and tests are done under the following OSs:
+- Debian 7
 - Ubuntu 12.10
 - Windows XP/7/8
 And following IDEs/Compilers
-- GCC 4.7.x with a provided Makefile
+- GCC 4.7.2 with a provided Makefile
 - Eclipse CDT under Linux, using the provided Makefile
-- Visual Studio Express 2008/2010/2012 for testing compatibility purpose
+- Visual Studio Express 2008/2010/2012/2013 for testing compatibility purpose
 
-### Dependencies:
+### Dependencies
 
 - a STL implementation (even an old one, like the one provided with VC6 should work)
 - exception support (the class Exception inherit from std::runtime_error)
@@ -61,7 +65,7 @@ And following IDEs/Compilers
   or by adding its source file in your project code base (source code provided in src/sqlite3 for Windows),
   with the SQLITE_ENABLE_COLUMN_METADATA macro defined (see http://www.sqlite.org/compile.html#enable_column_metadata).
 
-### Installation:
+### Installation
 
 To use this wrappers, you need to add the 10 SQLiteC++ source files from the src/ directory
 in your project code base, and compile/link against the sqlite library.
@@ -76,11 +80,8 @@ Under Debian/Ubuntu/Mint Linux, install the libsqlite3-dev package.
 
 ### Building the examples:
 
-A basic Makefile is provided, tested under Linux/Ubuntu 12.10, requiring the sqlite3 static library (sqlite3-dev Debian/Ubuntu package)
-Solutions for Visual Studio 2008 and 2010 are provided in the "msvc/" directory, directly using the sqlite3.c source code for ease of use.
-
 #### CMake and test
-A CMake configuration file is also provided for better multiplatform support and testing.
+A CMake configuration file is also provided for multiplatform support and testing.
 
 Typical generic build (see also "build.bat" or "./build.sh"):
 
@@ -121,8 +122,12 @@ You can either recompile it yourself (seek help online) or you can comment out t
 
 This project is continuously tested under Ubuntu Linux with the gcc and clang compilers
 using the Travis CI community service with the above CMake building and testing procedure.
+It is also tested in the same way under Windows Server 2012 R2 with Visual Studio 2013 compiler
+using the AppVeyor countinuous integration service.
 
-Detailed results can be seen online: https://travis-ci.org/SRombauts/SQLiteCpp
+Detailed results can be seen online:
+ - https://travis-ci.org/SRombauts/SQLiteCpp
+ - https://ci.appveyor.com/project/SbastienRombauts/SQLiteCpp
 
 ### Thread-safety
 
@@ -142,7 +147,7 @@ in a custom shared pointer (See the inner class "Statement::Ptr").
 
 ### License
 
-Copyright (c) 2012-2013 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+Copyright (c) 2012-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 or copy at http://opensource.org/licenses/MIT)
@@ -246,10 +251,11 @@ See also http://www.appinf.com/download/CppCodingStyleGuide.pdf for good guideli
 
 ## See also - Some other simple C++ SQLite wrappers:
 
-See also the file WRAPPERS.md offering a more complete comparison of other wrappers.
- - [sqdbcpp](http://code.google.com/p/sqdbcpp/): RAII design, simple, no depandencies, UTF-8/UTF-16, new BSD license
+See bellow a short comparison of other wrappers done at the time of the writting:
+ - [sqdbcpp](http://code.google.com/p/sqdbcpp/): RAII design, simple, no dependencies, UTF-8/UTF-16, new BSD license
  - [sqlite3cc](http://ed.am/dev/sqlite3cc): uses boost, modern design, LPGPL
- - [sqlite3pp](http://code.google.com/p/sqlite3pp/): uses boost, but never updated since initial publication in may 2012, MIT License
+ - [sqlite3pp](https://github.com/iwongu/sqlite3pp): modern design inspired by boost, MIT License
  - [SQLite++](http://sqlitepp.berlios.de/): uses boost build system, Boost License 1.0 
  - [CppSQLite](http://www.codeproject.com/Articles/6343/CppSQLite-C-Wrapper-for-SQLite/): famous Code Project but old design, BSD License 
  - [easySQLite](http://code.google.com/p/easysqlite/): manages table as structured objects, complex 
+ - [sqlite_modern_cpp](https://github.com/keramer/sqlite_modern_cpp): modern C++11, all in one file, MIT license
