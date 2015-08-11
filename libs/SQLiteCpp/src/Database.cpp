@@ -73,8 +73,13 @@ Database::Database(const std::string& aFilename,
 Database::~Database() noexcept // nothrow
 {
     const int ret = sqlite3_close(mpSQLite);
-    // Never throw an exception in a destructor
-    SQLITECPP_ASSERT(SQLITE_OK == ret, sqlite3_errmsg(mpSQLite));  // See SQLITECPP_ENABLE_ASSERT_HANDLER
+
+    // Avoid unreferenced variable warning when build in release mode
+    (void) ret;
+
+    // Only case of error is SQLITE_BUSY: "database is locked" (some statements are not finalized)
+    // Never throw an exception in a destructor :
+    SQLITECPP_ASSERT(SQLITE_OK == ret, "database is locked");  // See SQLITECPP_ENABLE_ASSERT_HANDLER
 }
 
 /**
@@ -150,5 +155,26 @@ void Database::createFunction(const char*   apFuncName,
     check(ret);
 }
 
+// Load an extension into the sqlite database. Only affects the current connection.
+// Parameter details can be found here: http://www.sqlite.org/c3ref/load_extension.html
+void Database::loadExtension(const char* apExtensionName,
+         const char *apEntryPointName)
+{
+#ifdef SQLITE_OMIT_LOAD_EXTENSION
+#
+    throw std::runtime_error("sqlite extensions are disabled");
+#
+#else
+#
+    int ret = sqlite3_enable_load_extension(mpSQLite, 1);
+
+    check(ret);
+
+    ret = sqlite3_load_extension(mpSQLite, apExtensionName, apEntryPointName, 0);
+
+    check(ret);
+#
+#endif
+}
 
 }  // namespace SQLite
