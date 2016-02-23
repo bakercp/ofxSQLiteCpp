@@ -58,7 +58,7 @@ ofJson SQLiteUtils::execute(SQLite::Statement& query)
                 }
                 case SQLITE_NULL:
                 {
-                    row[column.getName()] = Json::nullValue;
+                    row[column.getName()] = nullptr;
                     break;
                 }
                 case SQLITE_TEXT:
