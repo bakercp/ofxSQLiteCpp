@@ -3,7 +3,7 @@
  * @ingroup SQLiteCpp
  * @brief   A prepared SQLite Statement is a compiled SQL query ready to be executed, pointing to a row of result.
  *
- * Copyright (c) 2012-2015 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2012-2016 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -195,7 +195,7 @@ bool Statement::executeStep()
         {
             mbOk = false;
             mbDone = false;
-            throw SQLite::Exception(sqlite3_errmsg(mStmtPtr));
+            throw SQLite::Exception(sqlite3_errstr(ret));
         }
     }
     else
@@ -227,7 +227,7 @@ int Statement::exec()
         {
             mbOk = false;
             mbDone = false;
-            throw SQLite::Exception(sqlite3_errmsg(mStmtPtr));
+            throw SQLite::Exception(sqlite3_errstr(ret));
         }
     }
     else
@@ -317,7 +317,7 @@ Statement::Ptr::Ptr(sqlite3* apSQLite, std::string& aQuery) :
     const int ret = sqlite3_prepare_v2(apSQLite, aQuery.c_str(), static_cast<int>(aQuery.size()), &mpStmt, NULL);
     if (SQLITE_OK != ret)
     {
-        throw SQLite::Exception(sqlite3_errmsg(mpSQLite));
+        throw SQLite::Exception(sqlite3_errstr(ret));
     }
     // Initialize the reference counter of the sqlite3_stmt :
     // used to share the mStmtPtr between Statement and Column objects;
