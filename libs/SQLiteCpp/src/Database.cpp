@@ -36,7 +36,7 @@ Database::Database(const char* apFilename,
     const int ret = sqlite3_open_v2(apFilename, &mpSQLite, aFlags, apVfs);
     if (SQLITE_OK != ret)
     {
-        std::string strerr = sqlite3_errmsg(mpSQLite);
+        std::string strerr = sqlite3_errstr(ret);
         sqlite3_close(mpSQLite); // close is required even in case of error on opening
         throw SQLite::Exception(strerr);
     }
@@ -58,7 +58,7 @@ Database::Database(const std::string& aFilename,
     const int ret = sqlite3_open_v2(aFilename.c_str(), &mpSQLite, aFlags, aVfs.empty() ? NULL : aVfs.c_str());
     if (SQLITE_OK != ret)
     {
-        std::string strerr = sqlite3_errmsg(mpSQLite);
+        std::string strerr = sqlite3_errstr(ret);
         sqlite3_close(mpSQLite); // close is required even in case of error on opening
         throw SQLite::Exception(strerr);
     }
@@ -73,14 +73,19 @@ Database::Database(const std::string& aFilename,
 Database::~Database() noexcept // nothrow
 {
     const int ret = sqlite3_close(mpSQLite);
-    // Never throw an exception in a destructor
-    SQLITECPP_ASSERT(SQLITE_OK == ret, sqlite3_errmsg(mpSQLite));  // See SQLITECPP_ENABLE_ASSERT_HANDLER
+
+    // Avoid unreferenced variable warning when build in release mode
+    (void) ret;
+
+    // Only case of error is SQLITE_BUSY: "database is locked" (some statements are not finalized)
+    // Never throw an exception in a destructor :
+    SQLITECPP_ASSERT(SQLITE_OK == ret, "database is locked");  // See SQLITECPP_ENABLE_ASSERT_HANDLER
 }
 
 /**
  * @brief Set a busy handler that sleeps for a specified amount of time when a table is locked.
  *
- *  This is usefull in multithreaded program to handle case where a table is locked for writting by a thread.
+ *  This is useful in multithreaded program to handle case where a table is locked for writting by a thread.
  * Any other thread cannot access the table and will receive a SQLITE_BUSY error:
  * setting a timeout will wait and retry up to the time specified before returning this SQLITE_BUSY error.
  *  Reading the value of timeout for current connection can be done with SQL query "PRAGMA busy_timeout;".
@@ -150,5 +155,26 @@ void Database::createFunction(const char*   apFuncName,
     check(ret);
 }
 
+// Load an extension into the sqlite database. Only affects the current connection.
+// Parameter details can be found here: http://www.sqlite.org/c3ref/load_extension.html
+void Database::loadExtension(const char* apExtensionName,
+         const char *apEntryPointName)
+{
+#ifdef SQLITE_OMIT_LOAD_EXTENSION
+#
+    throw std::runtime_error("sqlite extensions are disabled");
+#
+#else
+#
+    int ret = sqlite3_enable_load_extension(mpSQLite, 1);
+
+    check(ret);
+
+    ret = sqlite3_load_extension(mpSQLite, apExtensionName, apEntryPointName, 0);
+
+    check(ret);
+#
+#endif
+}
 
 }  // namespace SQLite

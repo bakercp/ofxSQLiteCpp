@@ -3,7 +3,7 @@
  * @ingroup SQLiteCpp
  * @brief   Management of a SQLite Database Connection.
  *
- * Copyright (c) 2012-2015 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2012-2016 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -270,10 +270,20 @@ public:
         return sqlite3_extended_errcode(mpSQLite);
     }
 
-    /// Return UTF-8 encoded English language explanation of the most recent failed API call (if any).
+    /// @brief Return UTF-8 encoded English language explanation of the most recent failed API call (if any).
     inline const char* errmsg() const noexcept // nothrow
     {
         return sqlite3_errmsg(mpSQLite);
+    }
+
+    /**
+     * @brief Return raw pointer to SQLite Database Connection Handle.
+     *
+     * This is often needed to mix this wrapper with other libraries or for advance usage not supported by SQLiteCpp.
+    */
+    inline sqlite3* getHandle() const noexcept // nothrow
+    {
+        return mpSQLite;
     }
 
     /**
@@ -336,6 +346,25 @@ public:
                               apApp, apFunc, apStep, apFinal, apDestroy);
     }
 
+
+    /**
+     * @brief Load a module into the current sqlite database instance. 
+     *
+     *  This is the equivalent of the sqlite3_load_extension call, but additionally enables
+     *  module loading support prior to loading the requested module.
+     *
+     * @see http://www.sqlite.org/c3ref/load_extension.html
+     *
+     * @note UTF-8 text encoding assumed.
+     *
+     * @param[in] apExtensionName   Name of the shared library containing extension
+     * @param[in] apEntryPointName  Name of the entry point (NULL to let sqlite work it out)
+     *
+     * @throw SQLite::Exception in case of error
+     */
+    void loadExtension(const char* apExtensionName,
+         const char *apEntryPointName);
+
 private:
     /// @{ Database must be non-copyable
     Database(const Database&);
@@ -349,7 +378,7 @@ private:
     {
         if (SQLITE_OK != aRet)
         {
-            throw SQLite::Exception(sqlite3_errmsg(mpSQLite));
+            throw SQLite::Exception(sqlite3_errstr(aRet));
         }
     }
 

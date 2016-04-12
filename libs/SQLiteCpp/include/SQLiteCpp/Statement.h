@@ -3,7 +3,7 @@
  * @ingroup SQLiteCpp
  * @brief   A prepared SQLite Statement is a compiled SQL query ready to be executed, pointing to a row of result.
  *
- * Copyright (c) 2012-2015 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2012-2016 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -44,9 +44,9 @@ class Column;
  */
 class Statement
 {
-public:
-    class Ptr;
+    friend class Column; // For access to Statement::Ptr inner class
 
+public:
     /**
      * @brief Compile and register the SQL query for the provided SQLite Database Connection
      *
@@ -400,7 +400,7 @@ public:
         return sqlite3_errmsg(mStmtPtr);
     }
 
-public:
+private:
     /**
      * @brief Shared pointer to the sqlite3_stmt SQLite Statement Object.
      *
@@ -457,7 +457,7 @@ private:
     {
         if (SQLITE_OK != aRet)
         {
-            throw SQLite::Exception(sqlite3_errmsg(mStmtPtr));
+            throw SQLite::Exception(sqlite3_errstr(aRet));
         }
     }
 
