@@ -25,10 +25,8 @@
 
 #pragma once
 
-
+#include "ofMain.h"
 #include "SQLiteCpp.h"
-#include <json/json.h>
-
 
 namespace SQLite {
 
@@ -36,12 +34,13 @@ namespace SQLite {
 class SQLiteUtils
 {
 public:
+        
     /// \brief Export SQLite results as JSON.
     ///
     /// Encodes BLOBs using BASE64.
     ///
     /// Throws exceptions.
-    static Json::Value execute(SQLite::Statement& query);
+    static ofJson execute(SQLite::Statement& query);
 
     
 };
