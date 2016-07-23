@@ -1,6 +1,6 @@
 // =============================================================================
 //
-// Copyright (c) 2014 Christopher Baker <http://christopherbaker.net>
+// Copyright (c) 2014-2016 Christopher Baker <http://christopherbaker.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,9 +34,9 @@ public:
     // Constructor
     MyObject(const std::string& dbFile):
         // Open a database file in readonly mode
-        mDb(dbFile),
+        _db(dbFile),
         // Compile a SQL query, containing one parameter (index 1)
-        mQuery(mDb, "SELECT * FROM test WHERE weight > :min_weight")
+        _query(_db, "SELECT * FROM test WHERE weight > :min_weight")
     {
     }
 
@@ -44,26 +44,30 @@ public:
     {
     }
 
-    /// List the rows where the "weight" column is greater than the provided aParamValue
+    /// \brief List the rows where the "weight" column is greater than the provided \p aParamValue.
+    /// \param aParamValue The value
     void listGreaterThan(int aParamValue)
     {
-        ofLogNotice() << "ListGreaterThan (" << aParamValue << ")";
+        ofLogNotice("MyObject::listGreaterThan") << "ListGreaterThan (" << aParamValue << ")";
 
         // Bind the integer value provided to the first parameter of the SQL query
-        mQuery.bind(":min_weight", aParamValue); // same as mQuery.bind(1, aParamValue);
+        _query.bind(":min_weight", aParamValue); // same as mQuery.bind(1, aParamValue);
 
         // Loop to execute the query step by step, to get one a row of results at a time
-        while (mQuery.executeStep())
+        while (_query.executeStep())
         {
-            ofLogNotice() << "row (" << mQuery.getColumn(0) << ", \"" << mQuery.getColumn(1) << "\", " << mQuery.getColumn(2) << ")";
+            ofLogNotice("MyObject::listGreaterThan") << "row (" << _query.getColumn(0) << ", \"" << _query.getColumn(1) << "\", " << _query.getColumn(2) << ")";
         }
 
         // Reset the query to be able to use it again later
-        mQuery.reset();
+        _query.reset();
     }
 
 private:
-    SQLite::Database    mDb;    ///< Database connection
-    SQLite::Statement   mQuery; ///< Database prepared SQL query
+    /// \brief Database connection.
+    SQLite::Database _db;
+
+    /// \brief Database prepared SQL query.
+    SQLite::Statement _query;
 
 };

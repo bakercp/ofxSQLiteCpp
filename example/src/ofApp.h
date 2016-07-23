@@ -33,7 +33,7 @@
 class ofApp: public ofBaseApp
 {
 public:
-    void setup();
-    void draw();
+    void setup() override;
+    void draw() override;
 
 };

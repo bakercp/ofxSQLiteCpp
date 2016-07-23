@@ -36,7 +36,7 @@ void ofApp::setup()
 
     try
     {
-        // Open a database file in create/write mode.
+        // Open a database file in create/write mode
         SQLite::Database db(exampleDB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
 
         ofLogNotice("ofApp::setup()") << "SQLite database file '" << db.getFilename() << "' opened successfully";
@@ -73,7 +73,7 @@ void ofApp::setup()
     }
     catch (const std::exception& e)
     {
-        ofLogError() << "SQLite exception: " << e.what();
+        ofLogError("ofApp::setup()") << "SQLite exception: " << e.what();
     }
 
 }

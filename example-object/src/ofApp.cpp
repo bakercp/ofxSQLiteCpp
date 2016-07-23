@@ -1,6 +1,6 @@
 // =============================================================================
 //
-// Copyright (c) 2014 Christopher Baker <http://christopherbaker.net>
+// Copyright (c) 2014-2016 Christopher Baker <http://christopherbaker.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,22 +31,22 @@ void ofApp::setup()
     ofSetFrameRate(30);
     ofEnableAlphaBlending();
 
-    /// Example Database
+    // Example database.
     std::string exampleDB = ofToDataPath("example.sqlite", true);
 
     try
     {
-        // Open the database and compile the query
+        // Open the database and compile the query.
         MyObject example(exampleDB);
 
-        // Demonstrate the way to use the same query with different parameter values
+        // Demonstrate the way to use the same query with different parameter values.
         example.listGreaterThan(8);
         example.listGreaterThan(6);
         example.listGreaterThan(2);
     }
-    catch (std::exception& e)
+    catch (const std::exception& e)
     {
-        ofLogError() << "SQLite exception: " << e.what();
+        ofLogError("ofApp::setup()") << "SQLite exception: " << e.what();
     }
 
 }
@@ -55,7 +55,5 @@ void ofApp::setup()
 void ofApp::draw()
 {
     ofBackgroundGradient(ofColor::white, ofColor::black);
-
     ofDrawBitmapStringHighlight("See console for output.", ofPoint(30, 30));
-    
 }

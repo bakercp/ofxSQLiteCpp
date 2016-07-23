@@ -31,7 +31,7 @@ void ofApp::setup()
     ofSetFrameRate(30);
     ofEnableAlphaBlending();
 
-    /// Example Database
+    // Example database.
     std::string exampleDB = ofToDataPath("example.sqlite", true);
 
     try
@@ -44,18 +44,18 @@ void ofApp::setup()
 
         if (testExists)
         {
-            ofLogNotice() << "Test table did exist!";
+            ofLogNotice("ofApp::setup()") << "Test table did exist!";
         }
         else
         {
-            ofLogNotice() << "Test table did NOT exist!";
+            ofLogNotice("ofApp::setup()") << "Test table did NOT exist!";
         }
 
 
         // Get a single value result with an easy to use shortcut
         std::string value = db.execAndGet("SELECT value FROM test WHERE id = 2");
 
-        ofLogNotice() << "Value was: " << value;
+        ofLogNotice("ofApp::setup()") << "Value was: " << value;
 
         std::string queryString = "";
         queryString += "SELECT id AS test_id, value AS test_val, weight AS test_weight ";
@@ -67,7 +67,7 @@ void ofApp::setup()
 
         // See how many columns are in our prepared statement:
 
-        ofLogNotice() << "SQLite statement '" << query.getQuery() << "' compiled (" << query.getColumnCount() << " columns in the result)";
+        ofLogNotice("ofApp::setup()") << "SQLite statement '" << query.getQuery() << "' compiled (" << query.getColumnCount() << " columns in the result)";
 
         // Bind the integer value 2 to the first parameter of the SQL query
         query.bind(1, 2);
@@ -89,12 +89,12 @@ void ofApp::setup()
                 std::string name1 = query.getColumn(1).getName();
                 std::string name2 = query.getColumn(2).getName();
 
-                ofLogNotice() << "aliased result [\"" << name0 << "\", \"" << name1 << "\", \"" << name2 << "\"]";
+                ofLogNotice("ofApp::setup()") << "aliased result [\"" << name0 << "\", \"" << name1 << "\", \"" << name2 << "\"]";
 
                 bFirst = false;
             }
 
-            ofLogNotice() << "row (" << id << ", \"" << value2 << "\" "  << bytes << " bytes, " << weight << ")";
+            ofLogNotice("ofApp::setup()") << "row (" << id << ", \"" << value2 << "\" "  << bytes << " bytes, " << weight << ")";
         }
 
         // Reset the query to use it again.
@@ -106,12 +106,12 @@ void ofApp::setup()
         while (query.executeStep())
         {
             // Demonstrate that inserting column value in a std:ostream is natural
-            ofLogNotice() << "row (" << query.getColumn(0) << ", \"" << query.getColumn(1) << "\", " << query.getColumn(2) << ")";
+            ofLogNotice("ofApp::setup()") << "row (" << query.getColumn(0) << ", \"" << query.getColumn(1) << "\", " << query.getColumn(2) << ")";
         }
     }
-    catch (std::exception& e)
+    catch (const std::exception& e)
     {
-        ofLogError() << "SQLite exception: " << e.what();
+        ofLogError("ofApp::setup()") << "SQLite exception: " << e.what();
     }
 
 }
@@ -120,7 +120,5 @@ void ofApp::setup()
 void ofApp::draw()
 {
     ofBackgroundGradient(ofColor::white, ofColor::black);
-
     ofDrawBitmapStringHighlight("See console for output.", ofPoint(30, 30));
-    
 }

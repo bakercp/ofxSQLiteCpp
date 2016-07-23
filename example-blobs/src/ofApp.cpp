@@ -31,7 +31,7 @@ void ofApp::setup()
     ofSetFrameRate(30);
     ofEnableAlphaBlending();
 
-    /// Example Database
+    // Example database.
     std::string mbTilesFilename = ofToDataPath("blank-1-3.mbtiles", true);
 
     try
@@ -68,13 +68,13 @@ void ofApp::setup()
             std::size_t size = colBlob.getBytes(); // Get the number of bytes.
             ofBuffer buffer(static_cast<const char*>(blob), size); // Create a buffer with those bytes.
 
-            img.loadImage(buffer); // Load the image from the buffer.
+            img.load(buffer); // Load the image from the buffer.
         }
 
     }
-    catch (std::exception& e)
+    catch (const std::exception& e)
     {
-        ofLogError() << "SQLite exception: " << e.what();
+        ofLogError("ofApp::setup") << "SQLite exception: " << e.what();
     }
 }
 
