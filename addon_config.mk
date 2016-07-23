@@ -6,4 +6,4 @@ meta:
 	ADDON_URL = http://github.com/bakercp/ofxSQLiteCpp
 
 common:
-	ADDON_DEPENDENCIES = ofxJSON
+	ADDON_DEPENDENCIES = ofxIO
