@@ -1,6 +1,6 @@
 // =============================================================================
 //
-// Copyright (c) 2015 Christopher Baker <http://christopherbaker.net>
+// Copyright (c) 2015-2016 Christopher Baker <http://christopherbaker.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,13 +31,13 @@
 namespace SQLite {
 
 
-Json::Value SQLiteUtils::execute(SQLite::Statement& query)
+ofJson SQLiteUtils::execute(SQLite::Statement& query)
 {
-    Json::Value columns;
+    ofJson columns;
 
     while (query.executeStep())
     {
-        Json::Value row;
+        ofJson row;
 
         for (int i = 0; i < query.getColumnCount(); ++i)
         {
@@ -57,7 +57,7 @@ Json::Value SQLiteUtils::execute(SQLite::Statement& query)
                 }
                 case SQLITE_NULL:
                 {
-                    row[column.getName()] = Json::nullValue;
+                    row[column.getName()] = nullptr;
                     break;
                 }
                 case SQLITE_TEXT:
@@ -84,7 +84,7 @@ Json::Value SQLiteUtils::execute(SQLite::Statement& query)
             }
         }
 
-        columns.append(row);
+        columns.push_back(row);
     }
 
     // Reset the query to use it again.

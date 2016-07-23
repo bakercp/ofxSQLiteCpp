@@ -1,6 +1,6 @@
 // =============================================================================
 //
-// Copyright (c) 2015 Christopher Baker <http://christopherbaker.net>
+// Copyright (c) 2015-2016 Christopher Baker <http://christopherbaker.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@
 
 
 #include "SQLiteCpp.h"
-#include <json/json.h>
+#include "json.hpp"
 
 
 namespace SQLite {
@@ -41,7 +41,7 @@ public:
     /// Encodes BLOBs using BASE64.
     ///
     /// Throws exceptions.
-    static Json::Value execute(SQLite::Statement& query);
+    static ofJson execute(SQLite::Statement& query);
 
     
 };
