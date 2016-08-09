@@ -27,7 +27,7 @@
 
 
 #include "SQLiteCpp.h"
-#include "json.hpp"
+#include "ofJson.h"
 
 
 namespace SQLite {
@@ -40,7 +40,7 @@ public:
     ///
     /// Encodes BLOBs using BASE64.
     ///
-    /// Throws exceptions.
+    /// \throws Various exceptions.
     static ofJson execute(SQLite::Statement& query);
 
     
