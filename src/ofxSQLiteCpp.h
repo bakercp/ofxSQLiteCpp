@@ -26,25 +26,8 @@
 #pragma once
 
 
-#include "SQLiteCpp.h"
-#include "ofJson.h"
-
-
-namespace SQLite {
-
-
-class SQLiteUtils
-{
-public:
-    /// \brief Export SQLite results as JSON.
-    ///
-    /// Encodes BLOBs using BASE64.
-    ///
-    /// \throws Various exceptions.
-    static ofJson execute(SQLite::Statement& query);
-
-    
-};
-
-
-} // nampace SQLite
+#include "ofxIO.h"
+#include "SQLiteUtils.h"
+#include "SQLiteConnection.h"
+#include "SQLiteConnectionPool.h"
+#include "SQLiteCpp/SQLiteCpp.h"

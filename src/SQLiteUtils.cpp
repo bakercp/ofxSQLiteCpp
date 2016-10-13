@@ -23,7 +23,8 @@
 // =============================================================================
 
 
-#include "SQLiteCppUtils.h"
+#include "SQLiteUtils.h"
+#include "SQLiteCpp/Column.h"
 #include "Poco/Base64Encoder.h"
 #include <sstream>
 
@@ -31,7 +32,7 @@
 namespace SQLite {
 
 
-ofJson SQLiteUtils::execute(SQLite::Statement& query)
+ofJson SQLiteUtils::execute(Statement& query)
 {
     ofJson columns;
 
@@ -41,7 +42,7 @@ ofJson SQLiteUtils::execute(SQLite::Statement& query)
 
         for (int i = 0; i < query.getColumnCount(); ++i)
         {
-            const SQLite::Column& column = query.getColumn(i);
+            const Column& column = query.getColumn(i);
 
             switch (column.getType())
             {
@@ -92,6 +93,7 @@ ofJson SQLiteUtils::execute(SQLite::Statement& query)
 
     return columns;
 }
+
 
 
 } // nampace SQLite
