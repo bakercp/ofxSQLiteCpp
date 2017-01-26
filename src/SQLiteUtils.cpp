@@ -22,7 +22,7 @@ ofJson SQLiteUtils::execute(Statement& query)
     {
         ofJson row;
 
-        for (int i = 0; i < query.getColumnCount(); ++i)
+        for (auto i = 0; i < query.getColumnCount(); ++i)
         {
             const Column& column = query.getColumn(i);
 

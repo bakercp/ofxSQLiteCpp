@@ -57,7 +57,6 @@ void ofApp::setup()
     {
         ofLogError() << "SQLite exception: " << e.what();
     }
-
 }
 
 
