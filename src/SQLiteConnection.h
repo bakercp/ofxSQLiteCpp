@@ -8,6 +8,7 @@
 #pragma once
 
 
+#include "ofTypes.h"
 #include "Poco/RWLock.h"
 #include "SQLiteCpp.h"
 
