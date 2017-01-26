@@ -23,11 +23,11 @@ void ofApp::setup()
 
         ofLogNotice("ofApp::setup()") << "SQLite database file '" << db.getFilename() << "' opened successfully";
 
-        db.exec("DROP TABLE IF EXISTS test");
+        db.exec("DROP TABLE test");
         db.exec("CREATE TABLE test (id INTEGER PRIMARY KEY, value TEXT)");
 
         // first row
-        int nb = db.exec("INSERT INTO test VALUES (NULL, \"test\")");
+        int nb = db.exec("INSERT INTO test VALUES (NULL, `test`)");
 
         ofLogNotice("ofApp::setup()") << "INSERT INTO test VALUES (NULL, \"test\")\", returned " << nb;
 
