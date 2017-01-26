@@ -3,6 +3,7 @@ set -e
 
 echo `pwd`
 
-python3 scripts/ci/common/install_required_addons.py
+pip install pathlib
+python scripts/ci/common/install_required_addons.py
 
 ls -la ~/openFrameworks/addons
