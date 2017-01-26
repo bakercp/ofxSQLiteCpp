@@ -19,7 +19,7 @@ API documentation can be found here.
 
 ## Build Status
 
-Linux, macOS [![Build Status](https://travis-ci.org/bakercp/ofxSQLiteCPP.svg?branch=stable)](https://travis-ci.org/bakercp/ofxSQLiteCPP)
+Linux, macOS [![Build Status](https://travis-ci.org/bakercp/ofxSQLiteCpp.svg?branch=stable)](https://travis-ci.org/bakercp/ofxSQLiteCpp)
 
 Visual Studio, MSYS [![Build status](https://ci.appveyor.com/api/projects/status/vojvulwcrhrlbog4/branch/master?svg=true)](https://ci.appveyor.com/project/bakercp/ofxsqlitecpp/branch/master)
 
