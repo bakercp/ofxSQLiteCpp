@@ -4,6 +4,5 @@ meta:
 	ADDON_AUTHOR = bakercp
 	ADDON_TAGS = "sqlite"
 	ADDON_URL = http://github.com/bakercp/ofxSQLiteCpp
-
 common:
 	ADDON_DEPENDENCIES = ofxPoco ofxIO
