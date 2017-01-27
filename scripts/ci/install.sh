@@ -1,26 +1,19 @@
 #!/usr/bin/env bash
 set -e
 
-# Get the current OF_ROOT
-OF_ROOT="${OF_ROOT:-~/openFrameworks}"
-OF_ADDONS=$OF_ROOT/addons
-# Addon path
-# These paths assume that this file is located in
-#   ADDON_NAME/ci/install.sh
+OF_ROOT=$( cd "$(dirname "$0")/../../../.." ; pwd -P )
 
-ADDON_PATH=$( cd $(dirname $0) ; cd ../../; pwd -P )
-ADDON_NAME=${ADDON_PATH##*/}
-
+# Default addon github info.
 GH_USERNAME='bakercp'
 GH_BRANCH='master'
 GH_DEPTH=1
 
+# An array of required addons that will be gathered below.
 REQUIRED_ADDONS=()
 
 # Extract ADDON_DEPENDENCIES from addon_config.mk file.
-if [ -f $ADDON_PATH/addon_config.mk ]; then
+if [ -f ${OF_ROOT}/addons/${OF_ADDON_NAME}/addon_config.mk ]; then
   while read line; do
-    #line="$(echo -e "${line}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
     if [[ $line == ADDON_DEPENDENCIES* ]] ;
     then
       line=${line#*=}
@@ -29,24 +22,23 @@ if [ -f $ADDON_PATH/addon_config.mk ]; then
           REQUIRED_ADDONS+=($i)
       done
     fi
-  done < $ADDON_PATH/addon_config.mk
+  done < ${OF_ROOT}/addons/${OF_ADDON_NAME}/addon_config.mk
 fi
 
 # Gather addons from all examples.
-for addons_make in $ADDON_PATH/example*/addons.make; do
+for addons_make in ${OF_ROOT}/addons/${OF_ADDON_NAME}/example*/addons.make; do
   while read addon; do
-    if [ $addon != $ADDON_NAME ] ;
+    if [ ${addon} != ${OF_ADDON_NAME} ] ;
     then
       REQUIRED_ADDONS+=($addon)
     fi
   done < $addons_make
 done
 
-# We aren't de-duplicating array, to keep it pure bash.
+# We aren't de-duplicating array to keep it pure bash.
 for addon in "${REQUIRED_ADDONS[@]}"
 do
-  addon_path=$OF_ADDONS/$addon
-  if [ ! -d "$addon_path" ]; then
-    git clone --depth=$GH_DEPTH https://github.com/$GH_USERNAME/$addon.git $addon_path
+  if [ ! -d ${OF_ROOT}/addons/${addon} ]; then
+    git clone --depth=$GH_DEPTH https://github.com/$GH_USERNAME/$addon.git ${OF_ROOT}/addons/${addon}
   fi
 done
