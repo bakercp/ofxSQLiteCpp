@@ -9,7 +9,6 @@
 
 
 #include "ofTypes.h"
-#include "Poco/RWLock.h"
 #include "SQLiteCpp.h"
 
 
@@ -38,7 +37,7 @@ public:
     /// \param filename The filename of the sqlite database.
     /// \param mode The access mode used during this connection.
     /// \param databaseTimeoutMilliseconds the SQLite setBusy value.
-    /// \param mutex The mutex that can be shared within a connection pool.
+    /// \param index The index value for pool use.
     SQLiteConnection(const std::string& filename,
                      Mode mode = Mode::READ_ONLY,
                      uint64_t databaseTimeoutMilliseconds = 0,
@@ -83,6 +82,7 @@ public:
     {
         _useCount++;
     }
+
 protected:
     /// \brief Convert the SQLiteConnection::Mode to the native sqlite flags.
     /// \param mode The mode to convert.

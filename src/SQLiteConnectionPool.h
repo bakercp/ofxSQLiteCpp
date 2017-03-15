@@ -9,7 +9,6 @@
 
 
 #include "ofTypes.h"
-#include "Poco/RWLock.h"
 #include "ofx/ObjectPool.h"
 #include "SQLiteConnection.h"
 
