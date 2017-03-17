@@ -59,7 +59,6 @@ void ofApp::setup()
 
             ofLogNotice("ofApp::setup()") << "INSERT INTO test \"error\", returned " << nb;
 
-
             ofLogNotice("ofApp::setup()") << "SQLite SHOULD have exited ... ";
 
             // Commit transaction
@@ -67,7 +66,7 @@ void ofApp::setup()
         }
         catch (const std::exception& e)
         {
-            ofLogError("ofApp::setup()") << "EXPECTED: SQLite exception: " << e.what();
+            ofLogError("ofApp::setup()") << "INTENTIONAL EXCEPTION: SQLite exception: " << e.what();
             // expected error, see above
         }
 
