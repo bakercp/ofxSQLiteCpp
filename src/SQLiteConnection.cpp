@@ -71,11 +71,11 @@ int SQLiteConnection::_toAccessFlag(Mode mode)
     switch (mode)
     {
         case Mode::READ_ONLY:
-            return SQLITE_OPEN_READONLY;
+            return OPEN_READONLY;
         case Mode::READ_WRITE:
-            return SQLITE_OPEN_READWRITE;
+            return OPEN_READWRITE;
         case Mode::READ_WRITE_CREATE:
-            return SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+            return OPEN_READWRITE | OPEN_CREATE;
     }
 }
 

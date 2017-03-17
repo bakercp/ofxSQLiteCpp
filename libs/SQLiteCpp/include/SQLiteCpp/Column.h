@@ -10,16 +10,21 @@
  */
 #pragma once
 
-#include <sqlite3.h>
-
 #include <SQLiteCpp/Statement.h>
 #include <SQLiteCpp/Exception.h>
 
 #include <string>
+#include <limits.h>
 
 
 namespace SQLite
 {
+
+extern const int INTEGER;   ///< SQLITE_INTEGER
+extern const int FLOAT;     ///< SQLITE_FLOAT
+extern const int TEXT;      ///< SQLITE_TEXT
+extern const int BLOB;      ///< SQLITE_BLOB
+extern const int Null;      ///< SQLITE_NULL
 
 
 /**
@@ -41,7 +46,20 @@ namespace SQLite
 class Column
 {
 public:
-    // Make clang happy by explicitly implementing the copy-constructor:
+    /**
+     * @brief Encapsulation of a Column in a Row of the result.
+     *
+     * @param[in] aStmtPtr  Shared pointer to the prepared SQLite Statement Object.
+     * @param[in] aIndex    Index of the column in the row of result, starting at 0
+     */
+    Column(Statement::Ptr& aStmtPtr, int aIndex)    noexcept; // nothrow
+    /// Simple destructor
+    virtual ~Column()                               noexcept; // nothrow
+
+    // default copy constructor and assignment operator are perfectly suited :
+    // they copy the Statement::Ptr which in turn increments the reference counter.
+
+    /// Make clang happy by explicitly implementing the copy-constructor:
     Column(const Column & aOther) :
         mStmtPtr(aOther.mStmtPtr),
         mIndex(aOther.mIndex)
@@ -49,24 +67,11 @@ public:
     }
 
     /**
-     * @brief Encapsulation of a Column in a Row of the result.
-     *
-     * @param[in] aStmtPtr  Shared pointer to the prepared SQLite Statement Object.
-     * @param[in] aIndex    Index of the column in the row of result
-     */
-    Column(Statement::Ptr& aStmtPtr, int aIndex)    noexcept; // nothrow
-    /// @brief Simple destructor
-    virtual ~Column()                               noexcept; // nothrow
-
-    // default copy constructor and assignment operator are perfectly suited :
-    // they copy the Statement::Ptr which in turn increments the reference counter.
-
-    /**
      * @brief Return a pointer to the named assigned to this result column (potentially aliased)
      *
      * @see getOriginName() to get original column name (not aliased)
      */
-    const char*     getName() const noexcept; // nothrow
+    const char* getName() const noexcept; // nothrow
 
 #ifdef SQLITE_ENABLE_COLUMN_METADATA
     /**
@@ -76,64 +81,72 @@ public:
      * - when building the SQLite library itself (which is the case for the Debian libsqlite3 binary for instance),
      * - and also when compiling this wrapper.
      */
-    const char*     getOriginName() const noexcept; // nothrow
+    const char* getOriginName() const noexcept; // nothrow
 #endif
 
-    /// @brief Return the integer value of the column.
-    int             getInt() const noexcept; // nothrow
-    /// @brief Return the 64bits integer value of the column.
-    sqlite3_int64   getInt64() const noexcept; // nothrow
-    /// @brief Return the double (64bits float) value of the column.
-    double          getDouble() const noexcept; // nothrow
+    /// Return the integer value of the column.
+    int         getInt() const noexcept; // nothrow
+    /// Return the 32bits unsigned integer value of the column (note that SQLite3 does not support unsigned 64bits).
+    unsigned    getUInt() const noexcept; // nothrow
+    /// Return the 64bits integer value of the column (note that SQLite3 does not support unsigned 64bits).
+    long long   getInt64() const noexcept; // nothrow
+    /// Return the double (64bits float) value of the column
+    double      getDouble() const noexcept; // nothrow
     /**
      * @brief Return a pointer to the text value (NULL terminated string) of the column.
      *
      * @warning The value pointed at is only valid while the statement is valid (ie. not finalized),
      *          thus you must copy it before using it beyond its scope (to a std::string for instance).
      */
-    const char*     getText(const char* apDefaultValue = "") const noexcept; // nothrow
+    const char* getText(const char* apDefaultValue = "") const noexcept; // nothrow
     /**
      * @brief Return a pointer to the binary blob value of the column.
      *
      * @warning The value pointed at is only valid while the statement is valid (ie. not finalized),
      *          thus you must copy it before using it beyond its scope (to a std::string for instance).
      */
-    const void*     getBlob() const noexcept; // nothrow
+    const void* getBlob() const noexcept; // nothrow
+    /**
+     * @brief Return a std::string for a TEXT or BLOB column.
+     *
+     * Note this correctly handles strings that contain null bytes.
+     */
+    std::string getString() const noexcept; // nothrow
 
     /**
      * @brief Return the type of the value of the column
      *
-     * Return either SQLITE_INTEGER, SQLITE_FLOAT, SQLITE_TEXT, SQLITE_BLOB, or SQLITE_NULL.
+     * Return either SQLite::INTEGER, SQLite::FLOAT, SQLite::TEXT, SQLite::BLOB, or SQLite::Null.
      *
      * @warning After a type conversion (by a call to a getXxx on a Column of a Yyy type),
      *          the value returned by sqlite3_column_type() is undefined.
      */
     int getType() const noexcept; // nothrow
 
-    /// @brief Test if the column is an integer type value (meaningful only before any conversion)
+    /// Test if the column is an integer type value (meaningful only before any conversion)
     inline bool isInteger() const noexcept // nothrow
     {
-        return (SQLITE_INTEGER == getType());
+        return (SQLite::INTEGER == getType());
     }
-    /// @brief Test if the column is a floating point type value (meaningful only before any conversion)
+    /// Test if the column is a floating point type value (meaningful only before any conversion)
     inline bool isFloat() const noexcept // nothrow
     {
-        return (SQLITE_FLOAT == getType());
+        return (SQLite::FLOAT == getType());
     }
-    /// @brief Test if the column is a text type value (meaningful only before any conversion)
+    /// Test if the column is a text type value (meaningful only before any conversion)
     inline bool isText() const noexcept // nothrow
     {
-        return (SQLITE_TEXT == getType());
+        return (SQLite::TEXT == getType());
     }
-    /// @brief Test if the column is a binary blob type value (meaningful only before any conversion)
+    /// Test if the column is a binary blob type value (meaningful only before any conversion)
     inline bool isBlob() const noexcept // nothrow
     {
-        return (SQLITE_BLOB == getType());
+        return (SQLite::BLOB == getType());
     }
-    /// @brief Test if the column is NULL (meaningful only before any conversion)
+    /// Test if the column is NULL (meaningful only before any conversion)
     inline bool isNull() const noexcept // nothrow
     {
-        return (SQLITE_NULL == getType());
+        return (SQLite::Null == getType());
     }
 
     /**
@@ -147,23 +160,47 @@ public:
      */
     int getBytes() const noexcept;
 
-    /// @brief Alias returning the number of bytes used by the text (or blob) value of the column
+    /// Alias returning the number of bytes used by the text (or blob) value of the column
     inline int size() const noexcept
     {
         return getBytes ();
     }
 
-    /// @brief Inline cast operator to int
+    /// Inline cast operator to int
     inline operator int() const
     {
         return getInt();
     }
-    /// @brief Inline cast operator to 64bits integer
-    inline operator sqlite3_int64() const
+    /// Inline cast operator to 32bits unsigned integer
+    inline operator unsigned int() const
+    {
+        return getUInt();
+    }
+#if (LONG_MAX == INT_MAX) // sizeof(long)==4 means the data model of the system is ILP32 (32bits OS or Windows 64bits)
+    /// Inline cast operator to 32bits long
+    inline operator long() const
+    {
+        return getInt();
+    }
+    /// Inline cast operator to 32bits unsigned long
+    inline operator unsigned long() const
+    {
+        return getUInt();
+    }
+#else
+    /// Inline cast operator to 64bits long when the data model of the system is ILP64 (Linux 64 bits...)
+    inline operator long() const
     {
         return getInt64();
     }
-    /// @brief Inline cast operator to double
+#endif
+
+    /// Inline cast operator to 64bits integer
+    inline operator long long() const
+    {
+        return getInt64();
+    }
+    /// Inline cast operator to double
     inline operator double() const
     {
         return getDouble();
@@ -171,7 +208,7 @@ public:
     /**
      * @brief Inline cast operator to char*
      *
-     * @see getText 
+     * @see getText
      */
     inline operator const char*() const
     {
@@ -193,31 +230,22 @@ public:
     // but is not working under Microsoft Visual Studio 2010, 2012 and 2013
     // (error C2440: 'initializing' : cannot convert from 'SQLite::Column' to 'std::basic_string<_Elem,_Traits,_Ax>'
     //  [...] constructor overload resolution was ambiguous)
-    /// Inline cast operator to std::string
-    inline operator const std::string() const
+    /**
+     * @brief Inline cast operator to std::string
+     *
+     * Handles BLOB or TEXT, which may contain null bytes within
+     *
+     * @see getString
+     */
+    inline operator std::string() const
     {
-        return getText();
+        return getString();
     }
 #endif
-    // NOTE : the following is required by GCC and Clang to cast a Column result in a long/int64_t
-    /// @brief Inline cast operator to long as 64bits integer
-    inline operator long() const
-    {
-#ifdef __x86_64__
-        return getInt64();
-#else
-        return getInt();
-#endif
-    }
 
-    /// @brief Return UTF-8 encoded English language explanation of the most recent error.
-    inline const char* errmsg() const
-    {
-        return sqlite3_errmsg(mStmtPtr);
-    }
 private:
-    Statement::Ptr  mStmtPtr;   //!< Shared Pointer to the prepared SQLite Statement Object
-    int             mIndex;     //!< Index of the column in the row of result
+    Statement::Ptr  mStmtPtr;   ///< Shared Pointer to the prepared SQLite Statement Object
+    int             mIndex;     ///< Index of the column in the row of result, starting at 0
 };
 
 /**
@@ -232,5 +260,22 @@ private:
  */
 std::ostream& operator<<(std::ostream& aStream, const Column& aColumn);
 
+#if __cplusplus >= 201402L || (defined(_MSC_VER) && _MSC_VER >= 1900)
+    // Create an instance of T from the first N columns, see declaration in Statement.h for full details
+    template<typename T, int N>
+    T Statement::getColumns()
+    {
+        checkRow();
+        checkIndex(N - 1);
+        return getColumns<T>(std::make_integer_sequence<int, N>{});
+    }
+
+    // Helper function called by getColums<typename T, int N>
+    template<typename T, const int... Is>
+    T Statement::getColumns(const std::integer_sequence<int, Is...>)
+    {
+        return T(Column(mStmtPtr, Is)...);
+    }
+#endif
 
 }  // namespace SQLite

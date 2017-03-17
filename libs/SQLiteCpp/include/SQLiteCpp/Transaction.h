@@ -3,7 +3,7 @@
  * @ingroup SQLiteCpp
  * @brief   A Transaction is way to group multiple SQL statements into an atomic secured operation.
  *
- * Copyright (c) 2012-2013 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2012-2016 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -69,8 +69,8 @@ private:
     /// @}
 
 private:
-    Database&   mDatabase;  //!< Reference to the SQLite Database Connection
-    bool        mbCommited; //!< True when commit has been called
+    Database&   mDatabase;  ///< Reference to the SQLite Database Connection
+    bool        mbCommited; ///< True when commit has been called
 };
 
 

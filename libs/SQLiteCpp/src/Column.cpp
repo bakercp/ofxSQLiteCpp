@@ -10,11 +10,19 @@
  */
 #include <SQLiteCpp/Column.h>
 
+#include <sqlite3.h>
+
 #include <iostream>
 
 
 namespace SQLite
 {
+
+const int INTEGER   = SQLITE_INTEGER;
+const int FLOAT     = SQLITE_FLOAT;
+const int TEXT      = SQLITE_TEXT;
+const int BLOB      = SQLITE_BLOB;
+const int Null      = SQLITE_NULL;
 
 
 // Encapsulation of a Column in a row of the result pointed by the prepared Statement.
@@ -50,8 +58,14 @@ int Column::getInt() const noexcept // nothrow
     return sqlite3_column_int(mStmtPtr, mIndex);
 }
 
+// Return the unsigned integer value of the column specified by its index starting at 0
+unsigned Column::getUInt() const noexcept // nothrow
+{
+    return static_cast<unsigned>(getInt64());
+}
+
 // Return the 64bits integer value of the column specified by its index starting at 0
-sqlite3_int64 Column::getInt64() const noexcept // nothrow
+long long Column::getInt64() const noexcept // nothrow
 {
     return sqlite3_column_int64(mStmtPtr, mIndex);
 }
@@ -69,10 +83,22 @@ const char* Column::getText(const char* apDefaultValue /* = "" */) const noexcep
     return (pText?pText:apDefaultValue);
 }
 
-// Return a pointer to the text value (NULL terminated string) of the column specified by its index starting at 0
+// Return a pointer to the blob value (*not* NULL terminated) of the column specified by its index starting at 0
 const void* Column::getBlob() const noexcept // nothrow
 {
     return sqlite3_column_blob(mStmtPtr, mIndex);
+}
+
+// Return a std::string to a TEXT or BLOB column
+std::string Column::getString() const noexcept // nothrow
+{
+    // Note: using sqlite3_column_blob and not sqlite3_column_text
+    // - no need for sqlite3_column_text to add a \0 on the end, as we're getting the bytes length directly
+    const char *data = static_cast<const char *>(sqlite3_column_blob(mStmtPtr, mIndex));
+
+    // SQLite docs: "The safest policy is to invoke… sqlite3_column_blob() followed by sqlite3_column_bytes()"
+    // Note: std::string is ok to pass nullptr as first arg, if length is 0
+    return std::string(data, sqlite3_column_bytes(mStmtPtr, mIndex));
 }
 
 // Return the type of the value of the column

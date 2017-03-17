@@ -3,18 +3,20 @@
  * @ingroup SQLiteCpp
  * @brief   Backup is used to backup a database file in a safe and online way.
  *
- * Copyright (c) 2015-2015 Shibao HONG (shibaohong@outlook.com)
+ * Copyright (c) 2015 Shibao HONG (shibaohong@outlook.com)
+ * Copyright (c) 2015-2016 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
  */
 #pragma once
 
-#include <sqlite3.h>
-
 #include <SQLiteCpp/Database.h>
 
 #include <string>
+
+// Forward declaration to avoid inclusion of <sqlite3.h> in a header
+struct sqlite3_backup;
 
 namespace SQLite
 {
@@ -97,9 +99,7 @@ public:
     Backup(Database& aDestDatabase,
            Database& aSrcDatabase);
 
-    /**
-     * @brief Release the SQLite Backup resource.
-     */
+    /// Release the SQLite Backup resource.
     virtual ~Backup() noexcept;
 
     /**
@@ -117,19 +117,11 @@ public:
      */
     int executeStep(const int aNumPage = -1);
 
-    /**
-     * @brief Get the remaining number of source pages to be copied.
-     *
-     * @return the remaining number of source pages to be copied
-     */
-    int remainingPageCount();
+    /// Return the number of source pages still to be backed up as of the most recent call to executeStep().
+    int getRemainingPageCount();
 
-    /**
-     * @brief Get the total number of source pages.
-     *
-     * @return the total number of source pages
-     */
-    int totalPageCount();
+    /// Return the total number of pages in the source database as of the most recent call to executeStep().
+    int getTotalPageCount();
 
 private:
     /// @{ Backup must be non-copyable
@@ -138,7 +130,7 @@ private:
     /// @}
 
 private:
-    sqlite3_backup* mpSQLiteBackup;   //!< Pointer to SQLite Database Backup Handle
+    sqlite3_backup* mpSQLiteBackup;   ///< Pointer to SQLite Database Backup Handle
 };
 
 }  // namespace SQLite

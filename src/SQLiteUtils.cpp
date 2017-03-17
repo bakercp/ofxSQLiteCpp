@@ -9,6 +9,7 @@
 #include "SQLiteCpp/Column.h"
 #include "Poco/Base64Encoder.h"
 #include <sstream>
+#include <sqlite3.h>
 
 
 namespace SQLite {
@@ -62,6 +63,7 @@ ofJson SQLiteUtils::execute(Statement& query)
                 }
                 default:
                 {
+                    ofLogWarning("SQLiteUtils::execute") << "Unknonwn SQLITE type: " << column.getType() << ", using SQLITE_TEXT";
                     row[column.getName()] = column.getText();
                 }
             }
