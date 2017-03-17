@@ -19,7 +19,7 @@ void ofApp::setup()
     try
     {
         // Open a database file in create/write mode.
-        SQLite::Database db(exampleDB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
+        SQLite::Database db(exampleDB, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
 
         ofLogNotice("ofApp::setup()") << "SQLite database file '" << db.getFilename() << "' opened successfully";
 
