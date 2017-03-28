@@ -8,6 +8,7 @@
 #pragma once
 
 
+#include "ofConstants.h"
 #include "SQLiteCpp/Statement.h"
 #include "ofJson.h"
 
@@ -18,12 +19,7 @@ namespace SQLite {
 class SQLiteUtils
 {
 public:
-    /// \brief Export SQLite results as JSON.
-    ///
-    /// Encodes BLOBs using BASE64.
-    ///
-    /// \throws Various exceptions.
-    static ofJson execute(Statement& query);
+    OF_DEPRECATED_MSG("Use SQLiteJSON::execute instead.", static ofJson execute(Statement& query));
 
 };
 
