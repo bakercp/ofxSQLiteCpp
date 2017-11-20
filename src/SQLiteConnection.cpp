@@ -76,6 +76,9 @@ int SQLiteConnection::_toAccessFlag(Mode mode)
             return OPEN_READWRITE;
         case Mode::READ_WRITE_CREATE:
             return OPEN_READWRITE | OPEN_CREATE;
+        default:
+            ofLogError("SQLiteConnection::_toAccessFlag") << "Unknown Mode.";
+            return -1;
     }
 }
 
