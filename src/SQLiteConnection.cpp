@@ -58,11 +58,9 @@ Statement& SQLiteConnection::getStatement(const std::string& query) const
         iter->second->clearBindings();
         return *iter->second.get();
     }
-    else
-    {
-        // Insert and retern a reference.
-        return *_statements.insert(std::make_pair(query, std::make_unique<Statement>(_database, query))).first->second.get();
-    }
+
+    // Insert and retern a reference.
+    return *_statements.insert(std::make_pair(query, std::make_unique<Statement>(_database, query))).first->second.get();
 }
 
 
@@ -77,6 +75,8 @@ int SQLiteConnection::_toAccessFlag(Mode mode)
         case Mode::READ_WRITE_CREATE:
             return OPEN_READWRITE | OPEN_CREATE;
     }
+    
+    return OPEN_READONLY;
 }
 
 
