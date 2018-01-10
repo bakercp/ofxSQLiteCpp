@@ -9,6 +9,7 @@
 
 
 #include "SQLiteCpp.h"
+#include "ofConstants.h"
 
 
 namespace SQLite {
