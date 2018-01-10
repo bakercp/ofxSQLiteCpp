@@ -8,7 +8,6 @@
 #pragma once
 
 
-#include "ofTypes.h"
 #include "SQLiteCpp.h"
 
 

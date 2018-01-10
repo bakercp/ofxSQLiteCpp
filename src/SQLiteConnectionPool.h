@@ -9,6 +9,7 @@
 
 
 #include "ofTypes.h"
+#include <sstream>
 #include "ofx/ObjectPool.h"
 #include "SQLiteConnection.h"
 

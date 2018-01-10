@@ -16,10 +16,6 @@ void ofApp::setup()
     // Example database.
     std::string exampleDB = ofToDataPath("example.sqlite", true);
 
-    _databaseConnection = std::make_unique<SQLite::SQLiteConnection>(exampleDB.string(),
-                                                                     SQLite::SQLiteConnection::Mode::READ_WRITE);
-
-
     try
     {
         // Open a database file in create/write mode.

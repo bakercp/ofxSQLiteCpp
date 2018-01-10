@@ -7,6 +7,7 @@
 
 #include "SQLiteConnection.h"
 #include "ofUtils.h"
+#include "ofFileUtils.h"
 
 
 namespace SQLite {
