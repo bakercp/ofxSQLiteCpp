@@ -92,7 +92,7 @@ Database::Database(const std::string& aFilename,
 }
 
 // Close the SQLite database connection.
-Database::~Database() noexcept // nothrow
+Database::~Database()
 {
     const int ret = sqlite3_close(mpSQLite);
 
@@ -117,7 +117,7 @@ Database::~Database() noexcept // nothrow
  *
  * @throw SQLite::Exception in case of error
  */
-void Database::setBusyTimeout(const int aBusyTimeoutMs) noexcept // nothrow
+void Database::setBusyTimeout(const int aBusyTimeoutMs)
 {
     const int ret = sqlite3_busy_timeout(mpSQLite, aBusyTimeoutMs);
     check(ret);
@@ -211,6 +211,10 @@ void Database::createFunction(const char*   apFuncName,
 void Database::loadExtension(const char* apExtensionName, const char *apEntryPointName)
 {
 #ifdef SQLITE_OMIT_LOAD_EXTENSION
+    // Unused
+    (void)apExtensionName;
+    (void)apEntryPointName;
+
     throw std::runtime_error("sqlite extensions are disabled");
 #else
 #ifdef SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION // Since SQLite 3.13 (2016-05-18):
@@ -232,7 +236,7 @@ void Database::loadExtension(const char* apExtensionName, const char *apEntryPoi
 // Set the key for the current sqlite database instance.
 void Database::key(const std::string& aKey) const
 {
-    int pass_len = aKey.length();
+    int pass_len = static_cast<int>(aKey.length());
 #ifdef SQLITE_HAS_CODEC
     if (pass_len > 0) {
         const int ret = sqlite3_key(mpSQLite, aKey.c_str(), pass_len);
@@ -259,13 +263,14 @@ void Database::rekey(const std::string& aNewKey) const
         check(ret);
     }
 #else // SQLITE_HAS_CODEC
+    static_cast<void>(aNewKey); // silence unused parameter warning
     const SQLite::Exception exception("No encryption support, recompile with SQLITE_HAS_CODEC to enable.");
     throw exception;
 #endif // SQLITE_HAS_CODEC
 }
 
 // Test if a file contains an unencrypted database.
-const bool Database::isUnencrypted(const std::string& aFilename)
+bool Database::isUnencrypted(const std::string& aFilename)
 {
     if (aFilename.length() > 0) {
         std::ifstream fileBuffer(aFilename.c_str(), std::ios::in | std::ios::binary);
