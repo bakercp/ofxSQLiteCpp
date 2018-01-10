@@ -5,6 +5,7 @@ docs/*.tag
 _*/
 
 raw/
+*.qbs
 
 build*
 exampl*/.compiler*
