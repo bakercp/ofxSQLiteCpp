@@ -6,6 +6,7 @@ _*/
 
 raw/
 
+build*
 exampl*/.compiler*
 exampl*/config.make
 exampl*/Makefile
