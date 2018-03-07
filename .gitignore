@@ -5,7 +5,9 @@ docs/*.tag
 _*/
 
 raw/
+*.qbs
 
+build*
 exampl*/.compiler*
 exampl*/config.make
 exampl*/Makefile

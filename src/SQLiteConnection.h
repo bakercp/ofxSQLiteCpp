@@ -8,8 +8,8 @@
 #pragma once
 
 
-#include "ofTypes.h"
 #include "SQLiteCpp.h"
+#include "ofConstants.h"
 
 
 namespace SQLite {

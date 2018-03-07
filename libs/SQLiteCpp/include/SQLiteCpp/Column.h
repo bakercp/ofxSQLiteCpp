@@ -54,7 +54,7 @@ public:
      */
     Column(Statement::Ptr& aStmtPtr, int aIndex)    noexcept; // nothrow
     /// Simple destructor
-    virtual ~Column()                               noexcept; // nothrow
+    ~Column();
 
     // default copy constructor and assignment operator are perfectly suited :
     // they copy the Statement::Ptr which in turn increments the reference counter.
@@ -111,7 +111,7 @@ public:
      *
      * Note this correctly handles strings that contain null bytes.
      */
-    std::string getString() const noexcept; // nothrow
+    std::string getString() const;
 
     /**
      * @brief Return the type of the value of the column
@@ -261,21 +261,23 @@ private:
 std::ostream& operator<<(std::ostream& aStream, const Column& aColumn);
 
 #if __cplusplus >= 201402L || (defined(_MSC_VER) && _MSC_VER >= 1900)
-    // Create an instance of T from the first N columns, see declaration in Statement.h for full details
-    template<typename T, int N>
-    T Statement::getColumns()
-    {
-        checkRow();
-        checkIndex(N - 1);
-        return getColumns<T>(std::make_integer_sequence<int, N>{});
-    }
 
-    // Helper function called by getColums<typename T, int N>
-    template<typename T, const int... Is>
-    T Statement::getColumns(const std::integer_sequence<int, Is...>)
-    {
-        return T(Column(mStmtPtr, Is)...);
-    }
+// Create an instance of T from the first N columns, see declaration in Statement.h for full details
+template<typename T, int N>
+T Statement::getColumns()
+{
+    checkRow();
+    checkIndex(N - 1);
+    return getColumns<T>(std::make_integer_sequence<int, N>{});
+}
+
+// Helper function called by getColums<typename T, int N>
+template<typename T, const int... Is>
+T Statement::getColumns(const std::integer_sequence<int, Is...>)
+{
+    return T{Column(mStmtPtr, Is)...};
+}
+
 #endif
 
 }  // namespace SQLite

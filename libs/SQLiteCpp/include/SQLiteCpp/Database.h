@@ -17,8 +17,13 @@
 // Forward declarations to avoid inclusion of <sqlite3.h> in a header
 struct sqlite3;
 struct sqlite3_context;
+
+#ifndef SQLITE_USE_LEGACY_STRUCT // Since SQLITE 3.19 (used by default since SQLiteCpp 2.1.0)
+typedef struct sqlite3_value sqlite3_value;
+#else // Before SQLite 3.19 (legacy struct forward declaration can be activated with CMake SQLITECPP_LEGACY_STRUCT var)
 struct Mem;
 typedef struct Mem sqlite3_value;
+#endif
 
 
 namespace SQLite
@@ -122,7 +127,7 @@ public:
      *
      * @warning assert in case of error
      */
-    virtual ~Database() noexcept; // nothrow
+    ~Database();
 
     /**
      * @brief Set a busy handler that sleeps for a specified amount of time when a table is locked.
@@ -137,7 +142,7 @@ public:
      *
      * @throw SQLite::Exception in case of error
      */
-    void setBusyTimeout(const int aBusyTimeoutMs) noexcept; // nothrow
+    void setBusyTimeout(const int aBusyTimeoutMs);
 
     /**
      * @brief Shortcut to execute one or multiple statements without results.
@@ -412,7 +417,7 @@ public:
     *
     * @throw SQLite::Exception in case of error
     */
-    static const bool isUnencrypted(const std::string& aFilename);
+    static bool isUnencrypted(const std::string& aFilename);
 
 private:
     /// @{ Database must be non-copyable
