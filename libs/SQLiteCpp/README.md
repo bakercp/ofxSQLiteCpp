@@ -6,6 +6,7 @@ SQLiteC++
 [![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/SQLiteCpp.svg)](https://travis-ci.org/SRombauts/SQLiteCpp "Travis CI Linux Build Status")
 [![AppVeyor Windows Build status](https://ci.appveyor.com/api/projects/status/github/SRombauts/SQLiteCpp?svg=true)](https://ci.appveyor.com/project/SbastienRombauts/SQLiteCpp "AppVeyor Windows Build status")
 [![Coveralls](https://img.shields.io/coveralls/SRombauts/SQLiteCpp.svg)](https://coveralls.io/github/SRombauts/SQLiteCpp "Coveralls test coverage")
+[![Coverity](https://img.shields.io/coverity/scan/14508.svg)](https://scan.coverity.com/projects/srombauts-sqlitecpp "Coverity Scan Build Status")
 [![Join the chat at https://gitter.im/SRombauts/SQLiteCpp](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/SRombauts/SQLiteCpp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 SQLiteC++ (SQLiteCpp) is a smart and easy to use C++ SQLite3 wrapper.
@@ -19,7 +20,7 @@ with a few intuitive and well documented C++ classes.
 
 ### License:
 
-Copyright (c) 2012-2017 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+Copyright (c) 2012-2019 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 <a href="https://www.paypal.me/SRombauts" title="Pay Me a Beer! Donate with PayPal :)"><img src="https://www.paypalobjects.com/webstatic/paypalme/images/pp_logo_small.png" width="118"></a>
 
 Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
@@ -61,19 +62,18 @@ where assert() are used instead).
 Each SQLiteC++ object must be constructed with a valid SQLite database connection,
 and then is always valid until destroyed.
 
-### Supported platforms:
+### Supported platforms:
 
 Developements and tests are done under the following OSs:
 - Ubuntu 14.04 (Travis CI)
-- Windows XP/10
+- Windows 10, and Windows Server 2012 R2 & Windows Server 2016 (AppVeyor)
 - OS X 10.11 (Travis CI)
 
 And the following IDEs/Compilers
 - GCC 4.8.4, 4.9.3, 5.3.0 and 6.1.1 (C++03, C++11, C++14, C++1z)
 - Clang 3.5 and 3.8
 - Xcode 8
-- Visual Studio Community 2015
-- Eclipse CDT under Linux
+- Visual Studio Community 2017, and VS 2013 & 2015 (AppVeyor)
 
 ### Dependencies
 
@@ -94,6 +94,22 @@ The "CMakeLists.txt" file defining the static library is provided in the root di
 so you simply have to add_subdirectory(SQLiteCpp) to you main CMakeLists.txt
 and link to the "SQLiteCpp" wrapper library.
 
+Example for Linux: 
+```cmake
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/thirdparty/SQLiteCpp)
+
+include_directories(
+  ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SQLiteCpp/include
+)
+
+add_executable(main src/main.cpp)
+target_link_libraries(main
+  SQLiteCpp
+  sqlite3
+  pthread
+  dl
+  )
+``` 
 Thus this SQLiteCpp repository can be directly used as a Git submoldule.
 See the [SQLiteCpp_Example](https://github.com/SRombauts/SQLiteCpp_Example) side repository for a standalone "from scratch" example.
 
@@ -146,7 +162,7 @@ cmake --build .
 ctest --output-on-failure
 ```
 
-#### CMake options
+#### CMake options
 
   * For more options on customizing the build, see the [CMakeLists.txt](https://github.com/SRombauts/SQLiteCpp/blob/master/CMakeLists.txt) file.
 
@@ -164,7 +180,7 @@ You can either recompile it yourself (seek help online) or you can comment out t
 #define SQLITE_ENABLE_COLUMN_METADATA
 ```
 
-### Continuous Integration
+### Continuous Integration
 
 This project is continuously tested under Ubuntu Linux with the gcc and clang compilers
 using the Travis CI community service with the above CMake building and testing procedure.
@@ -298,4 +314,4 @@ See bellow a short comparison of other wrappers done at the time of writing:
  - [CppSQLite](http://www.codeproject.com/Articles/6343/CppSQLite-C-Wrapper-for-SQLite/): famous Code Project but old design, BSD License 
  - [easySQLite](http://code.google.com/p/easysqlite/): manages table as structured objects, complex 
  - [sqlite_modern_cpp](https://github.com/keramer/sqlite_modern_cpp): modern C++11, all in one file, MIT license
- 
+ - [sqlite_orm](https://github.com/fnc12/sqlite_orm): modern C++14, header only all in one file, no raw string queries, BSD-3 license

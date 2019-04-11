@@ -3,7 +3,7 @@
  * @ingroup SQLiteCpp
  * @brief   Encapsulation of a Column in a row of the result pointed by the prepared SQLite::Statement.
  *
- * Copyright (c) 2012-2016 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2012-2019 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -14,7 +14,7 @@
 #include <SQLiteCpp/Exception.h>
 
 #include <string>
-#include <limits.h>
+#include <climits> // For INT_MAX
 
 
 namespace SQLite
@@ -76,7 +76,7 @@ public:
 #ifdef SQLITE_ENABLE_COLUMN_METADATA
     /**
      * @brief Return a pointer to the table column name that is the origin of this result column
-     * 
+     *
      *  Require definition of the SQLITE_ENABLE_COLUMN_METADATA preprocessor macro :
      * - when building the SQLite library itself (which is the case for the Debian libsqlite3 binary for instance),
      * - and also when compiling this wrapper.
@@ -166,6 +166,27 @@ public:
         return getBytes ();
     }
 
+    /// Inline cast operator to char
+    inline operator char() const
+    {
+        return static_cast<char>(getInt());
+    }
+    /// Inline cast operator to unsigned char
+    inline operator unsigned char() const
+    {
+        return static_cast<unsigned char>(getInt());
+    }
+    /// Inline cast operator to short
+    inline operator short() const
+    {
+        return static_cast<short>(getInt());
+    }
+    /// Inline cast operator to unsigned short
+    inline operator unsigned short() const
+    {
+        return static_cast<unsigned short>(getInt());
+    }
+
     /// Inline cast operator to int
     inline operator int() const
     {
@@ -176,7 +197,7 @@ public:
     {
         return getUInt();
     }
-#if (LONG_MAX == INT_MAX) // sizeof(long)==4 means the data model of the system is ILP32 (32bits OS or Windows 64bits)
+#if (LONG_MAX == INT_MAX) // 4 bytes "long" type means the data model is ILP32 or LLP64 (Win64 Visual C++ and MinGW)
     /// Inline cast operator to 32bits long
     inline operator long() const
     {
@@ -187,8 +208,8 @@ public:
     {
         return getUInt();
     }
-#else
-    /// Inline cast operator to 64bits long when the data model of the system is ILP64 (Linux 64 bits...)
+#else // 8 bytes "long" type means the data model is LP64 (Most Unix-like, Windows when using Cygwin; z/OS)
+    /// Inline cast operator to 64bits long when the data model of the system is LP64 (Linux 64 bits...)
     inline operator long() const
     {
         return getInt64();
@@ -224,12 +245,16 @@ public:
         return getBlob();
     }
 
-#if !(defined(_MSC_VER) && _MSC_VER < 1900)
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
     // NOTE : the following is required by GCC and Clang to cast a Column result in a std::string
     // (error: conversion from ‘SQLite::Column’ to non-scalar type ‘std::string {aka std::basic_string<char>}’)
+    // and also required for Microsoft Visual Studio 2015 and newer
     // but is not working under Microsoft Visual Studio 2010, 2012 and 2013
     // (error C2440: 'initializing' : cannot convert from 'SQLite::Column' to 'std::basic_string<_Elem,_Traits,_Ax>'
     //  [...] constructor overload resolution was ambiguous)
+    // WARNING: without it, trying to access a binary blob with implicit cast to string
+    // ends up converting it to a C-style char*, damaging the data by truncating it to the first null character!
+    // (see https://github.com/SRombauts/SQLiteCpp/issues/189 Visual Studio 2013: unit test "Column.basis" failing)
     /**
      * @brief Inline cast operator to std::string
      *

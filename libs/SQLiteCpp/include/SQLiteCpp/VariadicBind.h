@@ -4,7 +4,7 @@
  * @brief   Convenience function for Statement::bind(...)
  *
  * Copyright (c) 2016 Paul Dreik (github@pauldreik.se)
- * Copyright (c) 2016 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2016-2019 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -27,7 +27,7 @@ namespace detail {
 template<class F, class ...Args, std::size_t ... I>
 inline void invoke_with_index(F&& f, std::integer_sequence<std::size_t, I...>, const Args& ...args)
 {
-    std::initializer_list<int> { (f(I+1, args), 0)... };
+    std::initializer_list<int>({ (f(I+1, args), 0)... });
 }
 
 /// implementation detail for variadic bind.
