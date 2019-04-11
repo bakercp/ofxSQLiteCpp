@@ -8,7 +8,6 @@
 #pragma once
 
 
-#include "ofxIO.h"
 #include "SQLiteUtils.h"
 #include "SQLiteConnection.h"
 #include "SQLiteConnectionPool.h"

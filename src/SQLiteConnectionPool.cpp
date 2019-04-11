@@ -11,7 +11,4 @@
 namespace SQLite {
 
 
-
-    
-
 } // nampace SQLite
