@@ -6,10 +6,12 @@
 
 
 #include "ofApp.h"
+#include "ofAppNoWindow.h"
 
 
 int main()
-{
-    ofSetupOpenGL(250, 50, OF_WINDOW);
+{   
+    ofAppNoWindow window;
+    ofSetupOpenGL(&window, 0, 0, OF_WINDOW);
     return ofRunApp(std::make_shared<ofApp>());
 }
