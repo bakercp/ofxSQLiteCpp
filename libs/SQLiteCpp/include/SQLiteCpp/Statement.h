@@ -73,6 +73,15 @@ public:
      */
     Statement(Database& aDatabase, const std::string& aQuery);
 
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1600)
+    /**
+     * @brief Move an SQLite statement.
+     *
+     * @param[in] aStatement    Statement to move
+     */
+    Statement(Statement&& aStatement) noexcept;
+#endif
+
     /// Finalize and unregister the SQL query from the SQLite Database Connection.
     ~Statement();
 
@@ -599,6 +608,10 @@ public:
     {
         return mQuery;
     }
+
+    // Return a UTF-8 string containing the SQL text of prepared statement with bound parameters expanded.
+    std::string getExpandedSQL();
+
     /// Return the number of columns in the result set returned by the prepared statement
     inline int getColumnCount() const
     {
@@ -619,6 +632,9 @@ public:
     {
         return mbDone;
     }
+
+    /// Return the number of bind parameters in the statement
+    int getBindParameterCount() const noexcept;
 
     /// Return the numeric result code for the most recent failed API call (if any).
     int getErrorCode() const noexcept; // nothrow
@@ -642,6 +658,12 @@ private:
         Ptr(sqlite3* apSQLite, std::string& aQuery);
         // Copy constructor increments the ref counter
         Ptr(const Ptr& aPtr);
+
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1600)
+        // Move constructor
+        Ptr(Ptr&& aPtr);
+#endif
+
         // Decrement the ref counter and finalize the sqlite3_stmt when it reaches 0
         ~Ptr();
 
@@ -719,7 +741,7 @@ private:
     Ptr                     mStmtPtr;       //!< Shared Pointer to the prepared SQLite Statement Object
     int                     mColumnCount;   //!< Number of columns in the result of the prepared statement
     mutable TColumnNames    mColumnNames;   //!< Map of columns index by name (mutable so getColumnIndex can be const)
-    bool                    mbHasRow;           //!< true when a row has been fetched with executeStep()
+    bool                    mbHasRow;       //!< true when a row has been fetched with executeStep()
     bool                    mbDone;         //!< true when the last executeStep() had no more row to fetch
 };
 

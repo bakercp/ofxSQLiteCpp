@@ -42,6 +42,19 @@ Statement::Statement(Database &aDatabase, const std::string& aQuery) :
     mColumnCount = sqlite3_column_count(mStmtPtr);
 }
 
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1600)
+Statement::Statement(Statement&& aStatement) noexcept :
+    mQuery(std::move(aStatement.mQuery)),
+    mStmtPtr(std::move(aStatement.mStmtPtr)),
+    mColumnCount(aStatement.mColumnCount),
+    mbHasRow(aStatement.mbHasRow),
+    mbDone(aStatement.mbDone)
+{
+    aStatement.mColumnCount = 0;
+    aStatement.mbHasRow = false;
+    aStatement.mbDone = false;
+}
+#endif
 
 // Finalize and unregister the SQL query from the SQLite Database Connection.
 Statement::~Statement()
@@ -247,7 +260,14 @@ bool Statement::executeStep()
     const int ret = tryExecuteStep();
     if ((SQLITE_ROW != ret) && (SQLITE_DONE != ret)) // on row or no (more) row ready, else it's a problem
     {
-        throw SQLite::Exception(mStmtPtr, ret);
+        if (ret == sqlite3_errcode(mStmtPtr))
+        {
+            throw SQLite::Exception(mStmtPtr, ret);
+        }
+        else
+        {
+            throw SQLite::Exception("Statement needs to be reseted", ret);
+        }
     }
 
     return mbHasRow; // true only if one row is accessible by getColumn(N)
@@ -263,9 +283,13 @@ int Statement::exec()
         {
             throw SQLite::Exception("exec() does not expect results. Use executeStep.");
         }
-        else
+        else if (ret == sqlite3_errcode(mStmtPtr))
         {
             throw SQLite::Exception(mStmtPtr, ret);
+        }
+        else
+        {
+            throw SQLite::Exception("Statement needs to be reseted", ret);
         }
     }
 
@@ -378,20 +402,35 @@ int Statement::getColumnIndex(const char* apName) const
     return (*iIndex).second;
 }
 
+int Statement::getBindParameterCount() const noexcept
+{
+    return sqlite3_bind_parameter_count(mStmtPtr);
+}
+
 // Return the numeric result code for the most recent failed API call (if any).
 int Statement::getErrorCode() const noexcept // nothrow
 {
     return sqlite3_errcode(mStmtPtr);
 }
+
 // Return the extended numeric result code for the most recent failed API call (if any).
 int Statement::getExtendedErrorCode() const noexcept // nothrow
 {
     return sqlite3_extended_errcode(mStmtPtr);
 }
+
 // Return UTF-8 encoded English language explanation of the most recent failed API call (if any).
 const char* Statement::getErrorMsg() const noexcept // nothrow
 {
     return sqlite3_errmsg(mStmtPtr);
+}
+
+// Return a UTF-8 string containing the SQL text of prepared statement with bound parameters expanded.
+std::string Statement::getExpandedSQL() {
+    char* expanded = sqlite3_expanded_sql(mStmtPtr);
+    std::string expandedString(expanded);
+    sqlite3_free(expanded);
+    return expandedString;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -438,28 +477,42 @@ Statement::Ptr::Ptr(const Statement::Ptr& aPtr) :
     ++(*mpRefCount);
 }
 
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1600)
+Statement::Ptr::Ptr(Ptr&& aPtr) :
+    mpSQLite(aPtr.mpSQLite),
+    mpStmt(aPtr.mpStmt),
+    mpRefCount(aPtr.mpRefCount)
+{
+    aPtr.mpSQLite = NULL;
+    aPtr.mpStmt = NULL;
+    aPtr.mpRefCount = NULL;
+}
+#endif
+
 /**
  * @brief Decrement the ref counter and finalize the sqlite3_stmt when it reaches 0
  */
 Statement::Ptr::~Ptr()
 {
-    assert(NULL != mpRefCount);
-    assert(0 != *mpRefCount);
-
-    // Decrement and check the reference counter of the sqlite3_stmt
-    --(*mpRefCount);
-    if (0 == *mpRefCount)
+    if (NULL != mpRefCount)
     {
-        // If count reaches zero, finalize the sqlite3_stmt, as no Statement nor Column objet use it anymore.
-        // No need to check the return code, as it is the same as the last statement evaluation.
-        sqlite3_finalize(mpStmt);
+        assert(0 != *mpRefCount);
 
-        // and delete the reference counter
-        delete mpRefCount;
-        mpRefCount = NULL;
-        mpStmt = NULL;
+        // Decrement and check the reference counter of the sqlite3_stmt
+        --(*mpRefCount);
+        if (0 == *mpRefCount)
+        {
+            // If count reaches zero, finalize the sqlite3_stmt, as no Statement nor Column objet use it anymore.
+            // No need to check the return code, as it is the same as the last statement evaluation.
+            sqlite3_finalize(mpStmt);
+
+            // and delete the reference counter
+            delete mpRefCount;
+            mpRefCount = NULL;
+            mpStmt = NULL;
+        }
+        // else, the finalization will be done later, by the last object
     }
-    // else, the finalization will be done later, by the last object
 }
 
 

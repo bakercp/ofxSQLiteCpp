@@ -198,7 +198,8 @@ void Database::createFunction(const char*   apFuncName,
 {
     int TextRep = SQLITE_UTF8;
     // optimization if deterministic function (e.g. of nondeterministic function random())
-    if (abDeterministic) {
+    if (abDeterministic)
+    {
         TextRep = TextRep|SQLITE_DETERMINISTIC;
     }
     const int ret = sqlite3_create_function_v2(mpSQLite, apFuncName, aNbArg, TextRep,
@@ -237,14 +238,16 @@ void Database::loadExtension(const char* apExtensionName, const char *apEntryPoi
 // Set the key for the current sqlite database instance.
 void Database::key(const std::string& aKey) const
 {
-    int pass_len = static_cast<int>(aKey.length());
+    int passLen = static_cast<int>(aKey.length());
 #ifdef SQLITE_HAS_CODEC
-    if (pass_len > 0) {
-        const int ret = sqlite3_key(mpSQLite, aKey.c_str(), pass_len);
+    if (passLen > 0)
+    {
+        const int ret = sqlite3_key(mpSQLite, aKey.c_str(), passLen);
         check(ret);
     }
 #else // SQLITE_HAS_CODEC
-    if (pass_len > 0) {
+    if (passLen > 0)
+    {
         const SQLite::Exception exception("No encryption support, recompile with SQLITE_HAS_CODEC to enable.");
         throw exception;
     }
@@ -255,11 +258,14 @@ void Database::key(const std::string& aKey) const
 void Database::rekey(const std::string& aNewKey) const
 {
 #ifdef SQLITE_HAS_CODEC
-    int pass_len = aNewKey.length();
-    if (pass_len > 0) {
-        const int ret = sqlite3_rekey(mpSQLite, aNewKey.c_str(), pass_len);
+    int passLen = aNewKey.length();
+    if (passLen > 0)
+    {
+        const int ret = sqlite3_rekey(mpSQLite, aNewKey.c_str(), passLen);
         check(ret);
-    } else {
+    }
+    else
+    {
         const int ret = sqlite3_rekey(mpSQLite, nullptr, 0);
         check(ret);
     }
@@ -273,14 +279,18 @@ void Database::rekey(const std::string& aNewKey) const
 // Test if a file contains an unencrypted database.
 bool Database::isUnencrypted(const std::string& aFilename)
 {
-    if (aFilename.length() > 0) {
+    if (aFilename.length() > 0)
+    {
         std::ifstream fileBuffer(aFilename.c_str(), std::ios::in | std::ios::binary);
         char header[16];
-        if (fileBuffer.is_open()) {
+        if (fileBuffer.is_open())
+        {
             fileBuffer.seekg(0, std::ios::beg);
             fileBuffer.getline(header, 16);
             fileBuffer.close();
-        } else {
+        }
+        else
+        {
             const SQLite::Exception exception("Error opening file: " + aFilename);
             throw exception;
         }
@@ -288,6 +298,50 @@ bool Database::isUnencrypted(const std::string& aFilename)
     }
     const SQLite::Exception exception("Could not open database, the aFilename parameter was empty.");
     throw exception;
+}
+
+// This is a reference implementation of live backup taken from the official sit:
+// https://www.sqlite.org/backup.html
+
+int Database::backup(const char* zFilename, BackupType type) {
+    /* Open the database file identified by zFilename. Exit early if this fails. */
+    sqlite3* pFile;
+    int rc = sqlite3_open(zFilename, &pFile);
+    if (rc == SQLITE_OK)
+    {
+        /* If this is a 'load' operation (isSave==0), then data is copied
+        ** from the database file just opened to database mpSQLite.
+        ** Otherwise, if this is a 'save' operation (isSave==1), then data
+        ** is copied from mpSQLite to pFile.  Set the variables pFrom and
+        ** pTo accordingly. */
+        sqlite3* pFrom = (type == Save ? mpSQLite : pFile);
+        sqlite3* pTo = (type == Save ? pFile : mpSQLite);
+
+        /* Set up the backup procedure to copy from the "main" database of
+        ** connection pFile to the main database of connection mpSQLite.
+        ** If something goes wrong, pBackup will be set to NULL and an error
+        ** code and message left in connection pTo.
+        **
+        ** If the backup object is successfully created, call backup_step()
+        ** to copy data from pFile to mpSQLite. Then call backup_finish()
+        ** to release resources associated with the pBackup object.  If an
+        ** error occurred, then an error code and message will be left in
+        ** connection pTo. If no error occurred, then the error code belonging
+        ** to pTo is set to SQLITE_OK.
+        */
+        sqlite3_backup *pBackup = sqlite3_backup_init(pTo, "main", pFrom, "main");
+        if (pBackup)
+        {
+            sqlite3_backup_step(pBackup, -1);
+            sqlite3_backup_finish(pBackup);
+        }
+        rc = sqlite3_errcode(pTo);
+    }
+
+    /* Close the database connection opened on database file zFilename
+    ** and return the result of this function. */
+    sqlite3_close(pFile);
+    return rc;
 }
 
 }  // namespace SQLite

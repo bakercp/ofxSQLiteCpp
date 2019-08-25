@@ -120,17 +120,17 @@ public:
              const int          aBusyTimeoutMs  = 0,
              const std::string& aVfs            = "");
 
-#if __cplusplus >= 201103L
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1600)
     /**
      * @brief Move an SQLite database connection.
      *
-     * @param[in] aDb   Database to move
+     * @param[in] aDatabase Database to move
      */
-    inline Database(Database&& aDb) noexcept :
-        mpSQLite(aDb.mpSQLite),
-        mFilename(std::move(aDb.mFilename))
+    inline Database(Database&& aDatabase) noexcept :
+        mpSQLite(aDatabase.mpSQLite),
+        mFilename(std::move(aDatabase.mFilename))
     {
-        aDb.mpSQLite = nullptr;
+        aDatabase.mpSQLite = nullptr;
     }
 #endif
 
@@ -313,7 +313,7 @@ public:
     }
 
     /**
-     * @brief Create or redefine a SQL function or aggregate in the sqlite database. 
+     * @brief Create or redefine a SQL function or aggregate in the sqlite database.
      *
      *  This is the equivalent of the sqlite3_create_function_v2 command.
      * @see http://www.sqlite.org/c3ref/create_function.html
@@ -341,7 +341,7 @@ public:
                         void      (*apDestroy)(void *));
 
     /**
-     * @brief Create or redefine a SQL function or aggregate in the sqlite database. 
+     * @brief Create or redefine a SQL function or aggregate in the sqlite database.
      *
      *  This is the equivalent of the sqlite3_create_function_v2 command.
      * @see http://www.sqlite.org/c3ref/create_function.html
@@ -373,7 +373,7 @@ public:
     }
 
     /**
-     * @brief Load a module into the current sqlite database instance. 
+     * @brief Load a module into the current sqlite database instance.
      *
      *  This is the equivalent of the sqlite3_load_extension call, but additionally enables
      *  module loading support prior to loading the requested module.
@@ -392,8 +392,8 @@ public:
     /**
     * @brief Set the key for the current sqlite database instance.
     *
-    *  This is the equivalent of the sqlite3_key call and should thus be called 
-    *  directly after opening the database. 
+    *  This is the equivalent of the sqlite3_key call and should thus be called
+    *  directly after opening the database.
     *  Open encrypted database -> call db.key("secret") -> database ready
     *
     * @param[in] aKey   Key to decode/encode the database
@@ -421,10 +421,10 @@ public:
     /**
     * @brief Test if a file contains an unencrypted database.
     *
-    *  This is a simple test that reads the first bytes of a database file and 
-    *  compares them to the standard header for unencrypted databases. If the 
-    *  header does not match the standard string, we assume that we have an 
-    *  encrypted file. 
+    *  This is a simple test that reads the first bytes of a database file and
+    *  compares them to the standard header for unencrypted databases. If the
+    *  header does not match the standard string, we assume that we have an
+    *  encrypted file.
     *
     * @param[in] aFilename path/uri to a file
     *
@@ -433,6 +433,22 @@ public:
     * @throw SQLite::Exception in case of error
     */
     static bool isUnencrypted(const std::string& aFilename);
+
+    /**
+     * @brief BackupType for the backup() method
+     */
+    enum BackupType { Save, Load };
+
+    /**
+     * @brief Load or save the database content.
+     *
+     * This function is used to load the contents of a database file on disk
+     * into the "main" database of open database connection, or to save the current
+     * contents of the database into a database file on disk.
+     *
+     * @return SQLITE_OK on success or an error code from SQLite.
+     */
+    int backup(const char* zFilename, BackupType type);
 
 private:
     /// @{ Database must be non-copyable
