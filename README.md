@@ -31,6 +31,10 @@ The `master` branch of this repository is meant to be compatible with the openFr
 
 Some past openFrameworks releases are supported via tagged versions, but only `stable` and `master` branches are actively supported.
 
+### Requirements
+-   ofxPoco (included with openFrameworks)
+-   [ofxIO](https://github.com/bakercp/ofxIO)
+
 ## Versioning
 
 This project uses Semantic Versioning, although strict adherence will only come into effect at version 1.0.0.
